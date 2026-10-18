@@ -1,0 +1,181 @@
+{
+  "contract": "CCUUEFQDUHBOXLKIEB6ED22QAYGZRQIEO7RTPXCBUYYEZUWFBOERWSZ6",
+  "network": "testnet",
+  "last_ledger": 4583532,
+  "treasury": {
+    "total_deposited": 2500000000000,
+    "total_allocated": 1826000000000,
+    "total_settled": 144000000000
+  },
+  "cards": {
+    "1": {
+      "id": 1,
+      "category": "SaaS",
+      "label": "saas",
+      "balance": 409000000000,
+      "limit": 500000000000,
+      "limit_window_secs": 2592000,
+      "window_start": 1788941027,
+      "spent_in_window": 24000000000,
+      "status": "Active"
+    },
+    "2": {
+      "id": 2,
+      "category": "AI",
+      "label": "ai-tools",
+      "balance": 600000000000,
+      "limit": 500000000000,
+      "limit_window_secs": 2592000,
+      "window_start": 1788941037,
+      "spent_in_window": 370000000000,
+      "status": "Active"
+    },
+    "3": {
+      "id": 3,
+      "category": "Advertising",
+      "label": "advertising",
+      "balance": 422000000000,
+      "limit": 500000000000,
+      "limit_window_secs": 2592000,
+      "window_start": 1788941042,
+      "spent_in_window": 120000000000,
+      "status": "Active"
+    },
+    "4": {
+      "id": 4,
+      "category": "Cloud",
+      "label": "cloud",
+      "balance": 250000000000,
+      "limit": 250000000000,
+      "limit_window_secs": 2592000,
+      "window_start": 1788941052,
+      "spent_in_window": 0,
+      "status": "Frozen"
+    },
+    "5": {
+      "id": 5,
+      "category": "Other",
+      "label": "misc",
+      "balance": 1000000000,
+      "limit": 900000000000,
+      "limit_window_secs": 2592000,
+      "window_start": 1788941172,
+      "spent_in_window": 0,
+      "status": "Active"
+    }
+  },
+  "spends": {
+    "1": {
+      "id": 1,
+      "card_id": 1,
+      "amount": 24000000000,
+      "merchant_ref": "aws-invoice-0824",
+      "decision": "Approved",
+      "reason_code": "None",
+      "settled": true,
+      "ledger_seq": 4583509,
+      "timestamp": 1788941132,
+      "tx_hash": "387ceded3194991ee2c0b05c7147ca9dccd59c940d40e5dd0a9b4a1e90e09f47"
+    },
+    "2": {
+      "id": 2,
+      "card_id": 4,
+      "amount": 5000000000,
+      "merchant_ref": "gcp-while-frozen",
+      "decision": "Declined",
+      "reason_code": "CardFrozen",
+      "settled": false,
+      "ledger_seq": 4583511,
+      "timestamp": 1788941142,
+      "tx_hash": "2cc40b269891c429ac9ac1e946be7054bd55785984fbf596a97ac419bfa31510"
+    },
+    "3": {
+      "id": 3,
+      "card_id": 2,
+      "amount": 370000000000,
+      "merchant_ref": "openai-sub",
+      "decision": "Approved",
+      "reason_code": "None",
+      "settled": false,
+      "ledger_seq": 4583513,
+      "timestamp": 1788941152,
+      "tx_hash": "9b6d6d1f920973d949cef7580bf75f04c9f9111cd1a2d4e3f87ace427e7537c4"
+    },
+    "4": {
+      "id": 4,
+      "card_id": 2,
+      "amount": 189000000000,
+      "merchant_ref": "openai-sub-0824",
+      "decision": "Declined",
+      "reason_code": "LimitExceeded",
+      "settled": false,
+      "ledger_seq": 4583515,
+      "timestamp": 1788941162,
+      "tx_hash": "28211a3f291c703bb91945a5ef9f267a2d32f841858359b1791a51cd89646b02"
+    },
+    "5": {
+      "id": 5,
+      "card_id": 5,
+      "amount": 50000000000,
+      "merchant_ref": "misc-oversized",
+      "decision": "Declined",
+      "reason_code": "InsufficientCardBalance",
+      "settled": false,
+      "ledger_seq": 4583521,
+      "timestamp": 1788941192,
+      "tx_hash": "d6f9b61e60c40724d6eb5b238db8bfda776cb1fa9e892e8fd408fa5d3555fd7f"
+    },
+    "6": {
+      "id": 6,
+      "card_id": 3,
+      "amount": 120000000000,
+      "merchant_ref": "google-ads-0824",
+      "decision": "Approved",
+      "reason_code": "None",
+      "settled": true,
+      "ledger_seq": 4583529,
+      "timestamp": 1788941232,
+      "tx_hash": "7517afa0c623edb8e54831dbaa666c957632092f8ec031d3c555961465b5bcab"
+    }
+  },
+  "settlements": {
+    "1": {
+      "id": 1,
+      "spend_id": 1,
+      "card_id": 1,
+      "amount": 24000000000,
+      "to": "GC6GKYA7DKMLTBEQYY5VQ2MIM2YHLROC57DKMFO6TYOMPDG5FT4LYOLI",
+      "ledger_seq": 4583526,
+      "timestamp": 1788941217,
+      "tx_hash": "387ceded3194991ee2c0b05c7147ca9dccd59c940d40e5dd0a9b4a1e90e09f47",
+      "reconciled": true
+    },
+    "2": {
+      "id": 2,
+      "spend_id": 6,
+      "card_id": 3,
+      "amount": 120000000000,
+      "to": "GC6GKYA7DKMLTBEQYY5VQ2MIM2YHLROC57DKMFO6TYOMPDG5FT4LYOLI",
+      "ledger_seq": 4583532,
+      "timestamp": 1788941247,
+      "tx_hash": "7517afa0c623edb8e54831dbaa666c957632092f8ec031d3c555961465b5bcab",
+      "reconciled": true
+    }
+  },
+  "whitelist": {
+    "GC6GKYA7DKMLTBEQYY5VQ2MIM2YHLROC57DKMFO6TYOMPDG5FT4LYOLI": true
+  },
+  "deposits": [
+    {
+      "from": "GAIXCPBY5Q7SV2M55YSQJ5BFXWTHPVOQVEK5EGTNBT3QHTWT5SVFSPW7",
+      "amount": 2500000000000,
+      "ledger": 4583485,
+      "tx_hash": "629d3176acba55d85d164d0e8707f1ee0549f331c310c96675e3c99e6414b66e",
+      "reconciled": true
+    }
+  ],
+  "roles": {},
+  "token": "CBKEHLQ7TSA2QVXLMVL7S7FR3BHPJ44BXM6GSQPSNU2NORCOBTG54ORX",
+  "decimals": 7,
+  "unknown_events": []
+}

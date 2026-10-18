@@ -1,0 +1,1 @@
+/Users/binh/development/SellarChain/saintix-treasury/smart-contract/target/wasm32v1-none/release/mock_token.wasm: /Users/binh/development/SellarChain/saintix-treasury/smart-contract/mock-token/src/lib.rs

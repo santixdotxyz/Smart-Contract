@@ -1,0 +1,41 @@
+[workspace]
+members = ["mock-token"]
+
+[workspace.dependencies]
+soroban-sdk = "27.0.6"
+
+[package]
+name = "saintix-treasury"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+mock-token = { path = "mock-token" }
+
+# Aggressive size optimisation, and `overflow-checks` on in RELEASE.
+#
+# The second one is the load-bearing setting. Rust turns overflow checks off in release by
+# default, so `balance - amount` on an i128 would wrap silently in the deployed wasm while every
+# test passed in debug. Decision #05 in the deck says every subtraction is checked; this is where
+# that promise is actually kept.
+#
+# This profile only takes effect at a WORKSPACE ROOT. That is why `backend/` is a separate
+# workspace rather than a member here — merging them would drop this block with nothing failing.
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = 0
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
+codegen-units = 1
+lto = true

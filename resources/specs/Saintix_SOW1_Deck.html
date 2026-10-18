@@ -1,0 +1,1423 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saintix SOW 1 Build Brief</title>
+</head>
+<body>
+<title>Saintix SOW 1 Build Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+/* ---------- tokens: light is the base, both dark states re-declare ---------- */
+:root{
+  --bg:#F3F6F6; --surface:#FFFFFF; --surface-2:#E9F0F0; --surface-3:#DFE9E9;
+  --border:#D3DEDF; --border-strong:#B2C3C5;
+  --ink:#0B191C; --ink-muted:#516468; --ink-faint:#7A8E92;
+  --accent:#0D5561; --accent-2:#12707F; --accent-soft:#E0EEF0;
+  --brass:#8A5F14; --brass-soft:#F5EBD8;
+  --ok:#1B6E45; --ok-soft:#E0F0E7;
+  --bad:#A32A20; --bad-soft:#F8E6E3;
+  --warn:#8A5A00; --warn-soft:#F7EEDA;
+  --ghost:#9DAFB2;
+  --shadow:0 1px 0 rgba(11,25,28,.04), 0 8px 24px -18px rgba(11,25,28,.45);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#071013; --surface:#0D1B1F; --surface-2:#122429; --surface-3:#183037;
+    --border:#1E363C; --border-strong:#2E4B52;
+    --ink:#E6EFF0; --ink-muted:#9AAFB3; --ink-faint:#72888D;
+    --accent:#4FC1D3; --accent-2:#79D5E3; --accent-soft:#0E2A31;
+    --brass:#DFAC57; --brass-soft:#2A2214;
+    --ok:#55C08B; --ok-soft:#0F2820;
+    --bad:#EF8274; --bad-soft:#2B1613;
+    --warn:#DFA845; --warn-soft:#2A2115;
+    --ghost:#5A7075;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 30px -20px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#071013; --surface:#0D1B1F; --surface-2:#122429; --surface-3:#183037;
+  --border:#1E363C; --border-strong:#2E4B52;
+  --ink:#E6EFF0; --ink-muted:#9AAFB3; --ink-faint:#72888D;
+  --accent:#4FC1D3; --accent-2:#79D5E3; --accent-soft:#0E2A31;
+  --brass:#DFAC57; --brass-soft:#2A2214;
+  --ok:#55C08B; --ok-soft:#0F2820;
+  --bad:#EF8274; --bad-soft:#2B1613;
+  --warn:#DFA845; --warn-soft:#2A2115;
+  --ghost:#5A7075;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 30px -20px rgba(0,0,0,.9);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:"Archivo","Helvetica Neue",Arial,sans-serif;font-stretch:108%;text-wrap:balance;margin:0;letter-spacing:-.015em}
+p{margin:0}
+a{color:var(--accent-2)}
+
+/* ---------- chrome ---------- */
+.top{
+  position:sticky; top:0; z-index:40;
+  display:flex; align-items:center; gap:14px;
+  padding:10px clamp(14px,3vw,34px);
+  background:var(--surface); border-bottom:1px solid var(--border);
+}
+.mark{display:flex;align-items:baseline;gap:9px;flex:0 0 auto}
+.mark b{font-family:"Archivo",sans-serif;font-stretch:118%;font-weight:700;font-size:15px;letter-spacing:.16em}
+.mark span{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;
+  padding:2px 6px;border:1px solid var(--accent);color:var(--accent);border-radius:2px;
+}
+.crumb{
+  flex:1 1 auto; min-width:0; font-family:"IBM Plex Mono",monospace;
+  font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.tools{display:flex;gap:8px;flex:0 0 auto}
+.btn{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.06em;
+  padding:5px 10px; border:1px solid var(--border-strong); background:transparent;
+  color:var(--ink-muted); border-radius:2px; cursor:pointer;
+}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+
+.bottom{
+  position:fixed; left:0; right:0; bottom:0; z-index:40;
+  display:flex; align-items:center; gap:14px;
+  padding:8px clamp(14px,3vw,34px);
+  background:var(--surface); border-top:1px solid var(--border);
+}
+body.mode-doc .bottom{display:none}
+.track{flex:1 1 auto;height:2px;background:var(--surface-3);position:relative}
+.track i{position:absolute;inset:0 auto 0 0;background:var(--brass);width:0%}
+.count{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-faint);font-variant-numeric:tabular-nums}
+.nav{display:flex;gap:6px}
+.nav button{width:30px;height:26px;font-size:13px;line-height:1}
+
+/* ---------- toc ---------- */
+.toc{
+  position:fixed; inset:0; z-index:60; display:none;
+  background:color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter:blur(3px);
+}
+.toc[data-open="true"]{display:block}
+.toc-panel{
+  position:absolute; top:0; right:0; bottom:0; width:min(420px,92vw);
+  background:var(--surface); border-left:1px solid var(--border);
+  padding:20px clamp(16px,2.5vw,26px); overflow:auto; box-shadow:var(--shadow);
+}
+.toc-panel h3{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;margin-bottom:14px}
+.toc-group{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);margin:18px 0 6px}
+.toc a{
+  display:flex; gap:10px; align-items:baseline; padding:5px 0;
+  color:var(--ink); text-decoration:none; border-bottom:1px solid var(--border); font-size:14px;
+}
+.toc a:hover{color:var(--accent)}
+.toc a em{font-family:"IBM Plex Mono",monospace;font-style:normal;font-size:11px;color:var(--ink-faint);font-variant-numeric:tabular-nums}
+
+/* ---------- stage ---------- */
+.stage{padding:0}
+body.mode-deck .slide{display:none}
+body.mode-deck .slide.is-active{display:block}
+body.mode-deck .stage{padding-bottom:46px}
+.slide{padding:clamp(20px,3.4vw,44px) clamp(14px,3vw,34px) clamp(28px,4vw,52px)}
+body.mode-doc .slide + .slide{border-top:1px solid var(--border)}
+.slide-inner{max-width:1180px;margin:0 auto}
+
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--accent); margin-bottom:10px;
+}
+.s-title{font-size:clamp(25px,3.5vw,40px);font-weight:700;line-height:1.1;margin-bottom:8px}
+.s-sub{color:var(--ink-muted);font-size:clamp(15px,1.5vw,17.5px);max-width:70ch;margin-bottom:22px}
+.hr{height:1px;background:var(--border);margin:22px 0}
+
+/* ---------- primitives ---------- */
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g-2-1{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
+@media (max-width:900px){.g2,.g3,.g4,.g-2-1{grid-template-columns:minmax(0,1fr)}}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:16px 17px}
+.card h3{font-size:17px;font-weight:600;margin-bottom:6px}
+.card p{color:var(--ink-muted);font-size:14.5px}
+.card--flat{background:var(--surface-2);border-color:transparent}
+.card--accent{border-color:var(--accent)}
+.card--ghost{background:transparent;border-style:dashed;border-color:var(--border-strong);color:var(--ink-faint)}
+.card--ghost h3{color:var(--ink-faint)}
+
+.idx{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;color:var(--brass);display:block;margin-bottom:7px}
+.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+
+.chip{
+  display:inline-flex;align-items:center;gap:5px;font-family:"IBM Plex Mono",monospace;
+  font-size:10.5px;letter-spacing:.07em;padding:2.5px 7px;border-radius:2px;
+  background:var(--surface-2);color:var(--ink-muted);border:1px solid var(--border);white-space:nowrap;
+}
+.chip--ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.chip--bad{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+.chip--warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.chip--acc{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.chip--brass{background:var(--brass-soft);color:var(--brass);border-color:transparent}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+
+ul.list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
+ul.list li{position:relative;padding-left:16px;font-size:14.5px;color:var(--ink-muted)}
+ul.list li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:1px;background:var(--accent)}
+ul.list li b{color:var(--ink);font-weight:600}
+
+.tblwrap{overflow-x:auto;border:1px solid var(--border);border-radius:3px;background:var(--surface)}
+table.tbl{border-collapse:collapse;width:100%;min-width:640px;font-size:13.5px}
+table.tbl th{
+  text-align:left;font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);
+  padding:9px 12px;border-bottom:1px solid var(--border-strong);white-space:nowrap;
+}
+table.tbl td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--ink-muted)}
+table.tbl tr:last-child td{border-bottom:none}
+table.tbl td b,table.tbl td strong{color:var(--ink);font-weight:600}
+table.tbl td.n{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink)}
+table.tbl tbody tr:hover td{background:var(--surface-2)}
+
+.callout{border-left:2px solid var(--brass);background:var(--brass-soft);padding:12px 15px;border-radius:0 3px 3px 0}
+.callout p{font-size:14.5px;color:var(--ink)}
+.callout .lbl{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);display:block;margin-bottom:5px}
+
+figure{margin:0}
+figure svg{width:100%;height:auto;display:block;color:var(--ink-muted)}
+body.mode-deck figure svg{max-height:56vh}
+figcaption{font-size:13px;color:var(--ink-faint);margin-top:9px;max-width:78ch}
+.figbox{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:16px}
+
+/* wireframes */
+.wire{background:var(--surface-2);border:1px dashed var(--border-strong);border-radius:3px;padding:13px}
+.wire-bar{display:flex;align-items:center;gap:7px;margin-bottom:10px}
+.wire-bar .dot{width:7px;height:7px;border-radius:50%;background:var(--border-strong)}
+.wire-bar span{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+.wire-row{display:flex;gap:9px;flex-wrap:wrap}
+.wbox{background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:10px 11px;flex:1 1 0;min-width:0}
+.wbox .lab{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);display:block;margin-bottom:4px}
+.wbox .val{font-family:"IBM Plex Mono",monospace;font-size:17px;font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
+.wbox .sm{font-size:13px;color:var(--ink-muted)}
+.meter{height:5px;background:var(--surface-3);border-radius:2px;overflow:hidden;margin-top:6px}
+.meter i{display:block;height:100%;background:var(--accent)}
+.meter.brass i{background:var(--brass)}
+.wline{height:1px;background:var(--border);margin:9px 0}
+.wskel{height:8px;background:var(--surface-3);border-radius:2px}
+
+.kbd{font-family:"IBM Plex Mono",monospace;font-size:11px;border:1px solid var(--border-strong);border-bottom-width:2px;border-radius:3px;padding:1px 5px;color:var(--ink-muted)}
+
+/* cover */
+.cover{display:flex;flex-direction:column;justify-content:center;min-height:min(72vh,640px)}
+.cover h1{font-size:clamp(38px,7.2vw,88px);font-weight:700;line-height:.98;letter-spacing:-.03em}
+.cover h1 em{font-style:normal;color:var(--accent);display:block}
+.cover .deckline{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);margin-bottom:18px}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:3px;margin-top:32px;overflow:hidden}
+.facts div{background:var(--surface);padding:13px 15px}
+.facts .k{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);display:block;margin-bottom:4px}
+.facts .v{font-family:"Archivo",sans-serif;font-stretch:108%;font-weight:600;font-size:19px;color:var(--ink)}
+@media (max-width:780px){.facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+@media (prefers-reduced-motion: no-preference){
+  .slide.is-active{animation:fade .22s ease-out}
+  @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+}
+</style>
+
+<header class="top">
+  <div class="mark"><b>SAINTIX</b><span>SOW&nbsp;1</span></div>
+  <div class="crumb" id="crumb">Bối cảnh</div>
+  <div class="tools">
+    <button class="btn" id="modeBtn" aria-pressed="false">Tài liệu</button>
+    <button class="btn" id="tocBtn">Mục lục</button>
+  </div>
+</header>
+
+<main class="stage" id="stage">
+
+<!-- 01 -->
+<section class="slide" data-sec="Bối cảnh" data-title="Bìa">
+  <div class="slide-inner cover">
+    <p class="deckline">Instaward · Phase 1 · Build brief</p>
+    <h1>Saintix<em>Soroban contract layer</em></h1>
+    <p class="s-sub" style="margin-top:20px;font-size:clamp(16px,1.7vw,20px)">
+      Treasury USDC on-chain → virtual card theo category → settlement &amp; reconciliation.
+      Deck này viết lại SOW 1 thành brief để đội development bắt đầu build ngay.
+    </p>
+    <div class="facts">
+      <div><span class="k">Thời lượng</span><span class="v">10 working days</span></div>
+      <div><span class="k">Ngân sách</span><span class="v">$5,000</span></div>
+      <div><span class="k">Asset</span><span class="v">USDC (native)</span></div>
+      <div><span class="k">Môi trường</span><span class="v">Stellar testnet</span></div>
+    </div>
+    <div class="chips" style="margin-top:20px">
+      <span class="chip chip--acc">Smart contract layer only</span>
+      <span class="chip">Không frontend / backend</span>
+      <span class="chip">Không card processor</span>
+      <span class="chip">Không fiat conversion</span>
+      <span class="chip chip--warn">Mainnet deferred</span>
+    </div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="slide" data-sec="Bối cảnh" data-title="Vấn đề Saintix giải quyết">
+  <div class="slide-inner">
+    <p class="eyebrow">Problem statement</p>
+    <h2 class="s-title">Hai vấn đề, một treasury</h2>
+    <p class="s-sub">SOW nêu đúng hai nỗi đau — và mỗi nỗi đau ánh xạ thẳng sang một nhóm deliverable của Phase 1.</p>
+    <div class="grid g2">
+      <div class="card">
+        <span class="idx">VẤN ĐỀ 01 → D1</span>
+        <h3>Tiền nằm ở stablecoin, hoá đơn đòi fiat</h3>
+        <p>Nhiều blockchain business đã giữ stablecoin trong treasury, nhưng chi phí vận hành thiết yếu — SaaS subscription, AI tools, advertising campaign, cloud service — vẫn phải trả bằng fiat.</p>
+        <div class="hr" style="margin:13px 0"></div>
+        <p style="color:var(--ink)"><b>Saintix:</b> cho phép công ty dùng thẳng số dư stablecoin đang có để chi trả chi phí hằng ngày.</p>
+      </div>
+      <div class="card">
+        <span class="idx">VẤN ĐỀ 02 → D2 · D3</span>
+        <h3>Không có cách allocate, trace, control theo category</h3>
+        <p>Tổ chức thiếu cơ chế rõ ràng để phân bổ, truy vết và kiểm soát chi tiêu giữa các nhóm chi phí khác nhau.</p>
+        <div class="hr" style="margin:13px 0"></div>
+        <p style="color:var(--ink)"><b>Saintix:</b> virtual card riêng cho từng mục đích — SaaS, AI, Advertising, Cloud, khác. Mỗi card có spending limit, status và transaction history riêng, hiển thị realtime qua dashboard và report tập trung.</p>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:16px">
+      <span class="lbl">Đọc kỹ chỗ này</span>
+      <p>Vấn đề 02 mới là thứ tạo ra sản phẩm. Vấn đề 01 chỉ cần một cầu nối thanh toán; vấn đề 02 đòi hỏi <b>state machine của tiền</b> — và đó chính là phần được đưa lên on-chain ở Phase 1.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="slide" data-sec="Bối cảnh" data-title="Mục tiêu của SOW 1">
+  <div class="slide-inner">
+    <p class="eyebrow">Objective for this Instaward</p>
+    <h2 class="s-title">Chứng minh core value flow enforce được on-chain</h2>
+    <p class="s-sub">Nguyên văn mục tiêu trong SOW, tách thành bảy mệnh đề để không mệnh đề nào bị bỏ sót khi review.</p>
+    <div class="grid g2">
+      <div class="grid" style="gap:10px">
+        <div class="card card--flat"><span class="idx">01</span><p style="color:var(--ink)">Contract giữ <b>USDC treasury</b> của tổ chức.</p></div>
+        <div class="card card--flat"><span class="idx">02</span><p style="color:var(--ink)">Split treasury thành <b>category-based virtual card balance</b>, mỗi card một limit riêng.</p></div>
+        <div class="card card--flat"><span class="idx">03</span><p style="color:var(--ink)">Enforce <b>allocation rule</b> và <b>solvency rule</b> ngay tại contract.</p></div>
+        <div class="card card--flat"><span class="idx">04</span><p style="color:var(--ink)">Ghi <b>settlement</b> và <b>reconciliation</b> cho card payment đã hoàn tất.</p></div>
+      </div>
+      <div class="grid" style="gap:10px">
+        <div class="card card--accent"><span class="idx" style="color:var(--accent)">05 · MỆNH ĐỀ TRỌNG TÂM</span><p style="color:var(--ink)">Contract là <b>source of truth</b> cho balance và limit.</p></div>
+        <div class="card card--accent"><span class="idx" style="color:var(--accent)">06 · MỆNH ĐỀ TRỌNG TÂM</span><p style="color:var(--ink)">Realtime card authorization chạy <b>off-chain</b> dựa trên constraint on-chain, rồi <b>reconcile ngược lại on-chain</b>.</p></div>
+        <div class="card card--flat"><span class="idx">07</span><p style="color:var(--ink)">Asset in scope: <b class="mono">native USDC</b> trên Stellar. Phase này <b>chỉ có smart contract layer</b>.</p></div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:16px">
+      <span class="lbl">Hệ quả kiến trúc của mệnh đề 05 + 06</span>
+      <p>Contract không nằm trong critical path của việc quẹt thẻ. Nó là <b>rule book</b> mà off-chain gateway đọc, và là <b>sổ cái</b> mà gateway ghi lại sau. Toàn bộ thiết kế entry point ở các slide sau đều xuất phát từ đây.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="slide" data-sec="Bối cảnh" data-title="Ranh giới scope">
+  <div class="slide-inner">
+    <p class="eyebrow">Scope of work · 4.1</p>
+    <h2 class="s-title">Ranh giới: cái gì giao, cái gì không</h2>
+    <p class="s-sub">Danh sách out-of-scope trong SOW là <em>explicitly not included</em> — nghĩa là mọi tranh luận về phạm vi đều kết thúc ở đây.</p>
+    <div class="grid g2">
+      <div>
+        <div class="chips" style="margin-bottom:11px"><span class="chip chip--ok">IN SCOPE · 3 deliverables</span></div>
+        <div class="grid" style="gap:10px">
+          <div class="card"><span class="idx">D1</span><h3>On-Chain Treasury</h3><p>Treasury contract deploy cho từng tổ chức, giữ stablecoin, nhận deposit, hiển thị available balance và deposit history.</p></div>
+          <div class="card"><span class="idx">D2</span><h3>Category-Based Virtual Cards &amp; Spending Control</h3><p>Split treasury thành card theo category, mỗi card có balance, limit, status. Validation entry point kiểm tra và ghi kết quả approved/declined on-chain.</p></div>
+          <div class="card"><span class="idx">D3</span><h3>Withdrawal &amp; Reconciliation</h3><p>Operator trừ tiền từ card gốc, chuyển tới whitelisted settlement address, ghi reconciliation record nối settlement với spend gốc.</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="chips" style="margin-bottom:11px"><span class="chip chip--bad">OUT OF SCOPE · explicitly not included</span></div>
+        <div class="card card--ghost">
+          <ul class="list" style="gap:9px">
+            <li>Frontend và backend application layer</li>
+            <li>Credit card issuer / processor integration</li>
+            <li>Third-party stablecoin → fiat conversion</li>
+            <li>Security audit</li>
+            <li>KYC / AML và compliance workflow</li>
+            <li>Multi-organization tenancy</li>
+            <li>Price oracle</li>
+            <li>Mainnet deployment</li>
+          </ul>
+        </div>
+        <div class="callout" style="margin-top:12px">
+          <span class="lbl">Mâu thuẫn cần xử lý</span>
+          <p>Frontend là out-of-scope, nhưng mục 6 yêu cầu evidence phải review được bởi Chapter Lead <b>với minimal technical expertise</b>. Cách giải quyết nằm ở phần UI/UX — một demo console mỏng tính vào line <span class="mono">Deploy + Demo</span>, không phải product frontend.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* diagram helpers */
+.dg text{font-family:"IBM Plex Sans",sans-serif;font-size:12px;fill:var(--ink)}
+.dg .t-lab{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;fill:var(--ink-faint)}
+.dg .t-arw{font-family:"IBM Plex Mono",monospace;font-size:10px;fill:var(--ink-muted)}
+.dg .t-hd{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;fill:var(--accent)}
+.dg .t-sm{font-size:11px;fill:var(--ink-muted)}
+.dg .bx{fill:var(--surface);stroke:var(--border-strong);stroke-width:1}
+.dg .bx-2{fill:var(--surface-2);stroke:var(--border-strong);stroke-width:1}
+.dg .bx-acc{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.2}
+.dg .bx-brass{fill:var(--brass-soft);stroke:var(--brass);stroke-width:1.2}
+.dg .bx-ok{fill:var(--ok-soft);stroke:var(--ok);stroke-width:1.2}
+.dg .bx-bad{fill:var(--bad-soft);stroke:var(--bad);stroke-width:1.2}
+.dg .bx-ghost{fill:none;stroke:var(--ghost);stroke-width:1;stroke-dasharray:5 4}
+.dg .frame{fill:none;stroke:var(--accent);stroke-width:1.4}
+.dg .ln{stroke:var(--ink-muted);stroke-width:1.2;fill:none}
+.dg .ln-d{stroke:var(--ink-muted);stroke-width:1.2;fill:none;stroke-dasharray:5 4}
+.dg .ln-acc{stroke:var(--accent);stroke-width:1.6;fill:none}
+.dg .ln-bad{stroke:var(--bad);stroke-width:1.4;fill:none;stroke-dasharray:4 3}
+.dg .ln-ghost{stroke:var(--ghost);stroke-width:1.2;fill:none;stroke-dasharray:5 4}
+.dg .hair{stroke:var(--border);stroke-width:1}
+</style>
+
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="8" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" style="fill:var(--ink-muted)"/>
+    </marker>
+    <marker id="ah-acc" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="8" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" style="fill:var(--accent)"/>
+    </marker>
+    <marker id="ah-bad" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="8" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" style="fill:var(--bad)"/>
+    </marker>
+    <marker id="ah-ghost" viewBox="0 0 10 8" refX="9" refY="4" markerWidth="8" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 z" style="fill:var(--ghost)"/>
+    </marker>
+  </defs>
+</svg>
+
+<!-- 05 -->
+<section class="slide" data-sec="Kiến trúc &amp; Feature" data-title="Kiến trúc tổng thể">
+  <div class="slide-inner">
+    <p class="eyebrow">Architecture</p>
+    <h2 class="s-title">Contract là rule book, không phải cổng thanh toán</h2>
+    <p class="s-sub">Ai ghi vào contract, ai đọc ra, và đường biên của SOW 1 nằm ở đâu.</p>
+    <div class="figbox">
+      <figure>
+        <svg class="dg" viewBox="0 0 980 520" role="img" aria-label="Sơ đồ kiến trúc: Org Admin và Operator ghi vào Soroban contract; off-chain auth gateway đọc state qua RPC rồi ghi spend record; RPC indexer và demo console đọc events; settlement address whitelisted nhận USDC.">
+          <!-- contract frame -->
+          <rect class="frame" x="290" y="20" width="400" height="474" rx="3"/>
+          <text class="t-hd" x="308" y="42">SOROBAN CONTRACT · SOW 1</text>
+          <rect class="bx-acc" x="308" y="58" width="364" height="48" rx="2"/>
+          <text x="322" y="79">Config &amp; roles</text><text class="t-sm" x="322" y="95">admin · operator</text>
+          <rect class="bx-acc" x="308" y="126" width="364" height="48" rx="2"/>
+          <text x="322" y="147">Treasury</text><text class="t-sm" x="322" y="163">deposit · accounting · solvency</text>
+          <rect class="bx-acc" x="308" y="194" width="364" height="48" rx="2"/>
+          <text x="322" y="215">Cards</text><text class="t-sm" x="322" y="231">category · balance · limit · status</text>
+          <rect class="bx-acc" x="308" y="262" width="364" height="48" rx="2"/>
+          <text x="322" y="283">Spend ledger</text><text class="t-sm" x="322" y="299">approved / declined + reason</text>
+          <rect class="bx-acc" x="308" y="330" width="364" height="48" rx="2"/>
+          <text x="322" y="351">Settlement</text><text class="t-sm" x="322" y="367">whitelist · withdraw · reconciliation</text>
+          <rect class="bx-2" x="308" y="410" width="364" height="36" rx="2"/>
+          <text class="t-lab" x="322" y="433">EVENTS · deposit · allocate · spend · settle</text>
+
+          <!-- actors -->
+          <rect class="bx" x="14" y="40" width="140" height="52" rx="2"/>
+          <text x="28" y="63">Org Admin</text><text class="t-sm" x="28" y="79">multisig / key</text>
+          <rect class="bx" x="14" y="136" width="140" height="52" rx="2"/>
+          <text x="28" y="159">Operator</text><text class="t-sm" x="28" y="175">service key</text>
+          <rect class="bx-brass" x="14" y="250" width="140" height="84" rx="2"/>
+          <text x="28" y="273">Auth gateway</text><text class="t-sm" x="28" y="289">off-chain</text><text class="t-sm" x="28" y="305">quyết định &lt; 2s</text>
+          <rect class="bx-ghost" x="14" y="380" width="140" height="48" rx="2"/>
+          <text class="t-sm" x="28" y="401" style="fill:var(--ghost)">Card network</text>
+          <text class="t-sm" x="28" y="417" style="fill:var(--ghost)">ngoài scope</text>
+
+          <!-- actor arrows -->
+          <path class="ln" d="M154,66 H284" marker-end="url(#ah)"/>
+          <text class="t-arw" x="224" y="58" text-anchor="middle">deposit · allocate</text>
+          <text class="t-arw" x="224" y="82" text-anchor="middle">create_card</text>
+          <path class="ln" d="M154,162 H284" marker-end="url(#ah)"/>
+          <text class="t-arw" x="224" y="154" text-anchor="middle">authorize_spend</text>
+          <text class="t-arw" x="224" y="178" text-anchor="middle">settle</text>
+          <path class="ln-d" d="M284,278 H160" marker-end="url(#ah)"/>
+          <text class="t-sm" x="222" y="270" text-anchor="middle">đọc state qua RPC</text>
+          <path class="ln-acc" d="M160,310 H284" marker-end="url(#ah-acc)"/>
+          <text class="t-arw" x="222" y="326" text-anchor="middle">ghi spend record</text>
+          <path class="ln-ghost" d="M84,380 V340" marker-end="url(#ah-ghost)"/>
+          <text class="t-sm" x="96" y="364" style="fill:var(--ghost)">auth request</text>
+
+          <!-- right column -->
+          <rect class="bx-ghost" x="770" y="100" width="196" height="68" rx="2"/>
+          <text class="t-sm" x="784" y="124" style="fill:var(--ink-muted)">Settlement address</text>
+          <text class="t-sm" x="784" y="140" style="fill:var(--ink-faint)">whitelisted placeholder</text>
+          <text class="t-sm" x="784" y="156" style="fill:var(--ink-faint)">chưa có fiat conversion</text>
+          <rect class="bx" x="770" y="300" width="196" height="60" rx="2"/>
+          <text x="784" y="324">RPC indexer</text><text class="t-sm" x="784" y="340">đọc &amp; validate tx</text>
+          <rect class="bx" x="770" y="404" width="196" height="64" rx="2"/>
+          <text x="784" y="428">Demo console</text><text class="t-sm" x="784" y="444">evidence cho Chapter Lead</text>
+
+          <path class="ln" d="M690,354 H716 V134 H764" marker-end="url(#ah)"/>
+          <text class="t-arw" transform="rotate(-90 706 244)" x="706" y="244" text-anchor="middle">USDC transfer</text>
+          <path class="ln" d="M690,428 H740 V330 H764" marker-end="url(#ah)"/>
+          <text class="t-arw" transform="rotate(-90 732 384)" x="732" y="384" text-anchor="middle">events</text>
+          <path class="ln" d="M868,360 V398" marker-end="url(#ah)"/>
+          <text class="t-arw" x="878" y="385">feed</text>
+        </svg>
+        <figcaption>Mũi tên liền = ghi state on-chain. Mũi tên đứt = đọc. Khối viền đứt = ngoài scope SOW 1. Điểm cần nhớ: card network không bao giờ chạm vào contract — nó nói chuyện với gateway, và gateway mới là bên ghi kết quả xuống ledger.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="slide" data-sec="Kiến trúc &amp; Feature" data-title="Feature D1 — On-Chain Treasury">
+  <div class="slide-inner">
+    <p class="eyebrow">Deliverable 1 · Feature breakdown</p>
+    <h2 class="s-title">On-Chain Treasury</h2>
+    <p class="s-sub">Tạo nguồn quỹ minh bạch và audit được cho mọi virtual card và spending category.</p>
+    <div class="grid g-2-1">
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead><tr><th>ID</th><th>Feature</th><th>Ràng buộc</th></tr></thead>
+          <tbody>
+            <tr><td class="n">F1.1</td><td><b>Deploy treasury instance cho từng tổ chức</b><br>Một contract instance / org, WASM dùng chung.</td><td>Multi-org tenancy ngoài scope → không share state giữa org.</td></tr>
+            <tr><td class="n">F1.2</td><td><b>Initialize</b><br>Set admin, operator ban đầu, USDC token address, settlement whitelist rỗng.</td><td>Idempotent — gọi lần hai phải panic.</td></tr>
+            <tr><td class="n">F1.3</td><td><b>Deposit USDC</b><br>Token transfer vào contract kèm auth của người gửi.</td><td>Chỉ nhận đúng token đã cấu hình; amount &gt; 0.</td></tr>
+            <tr><td class="n">F1.4</td><td><b>Available balance</b><br>Ba con số: total deposited, allocated, unallocated.</td><td>Bất biến ở slide data model phải luôn đúng.</td></tr>
+            <tr><td class="n">F1.5</td><td><b>Deposit history</b><br>Event cho mỗi lần nạp + query theo thứ tự.</td><td>Đủ dữ liệu để RPC indexer dựng lại lịch sử.</td></tr>
+            <tr><td class="n">F1.6</td><td><b>Role management</b><br>Grant / revoke admin và operator.</td><td>Không được để contract rơi vào trạng thái không còn admin.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="grid" style="gap:12px;align-content:start">
+        <div class="card card--flat">
+          <span class="idx">TẠI SAO QUAN TRỌNG</span>
+          <p style="color:var(--ink)">Đây là nơi duy nhất tiền vào hệ thống. Nếu accounting ở D1 sai, mọi guardrail ở D2 và D3 đều vô nghĩa vì chúng đều so sánh với con số này.</p>
+        </div>
+        <div class="callout">
+          <span class="lbl">Lưu ý Soroban</span>
+          <p>USDC trên Stellar có <b class="mono">7 decimals</b>. Dùng <span class="mono">i128</span> đơn vị nhỏ nhất xuyên suốt, không bao giờ dùng số thực. Mọi phép trừ phải là checked — underflow phải panic chứ không được wrap.</p>
+        </div>
+        <div class="card card--flat">
+          <span class="idx">EVIDENCE CẦN CÓ</span>
+          <p style="color:var(--ink)">GitHub repo · link contract đã deploy · link transaction trên Stellar Expert · kết quả test · ảnh và video demo.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="slide" data-sec="Kiến trúc &amp; Feature" data-title="Feature D2 — Cards &amp; Spending Control">
+  <div class="slide-inner">
+    <p class="eyebrow">Deliverable 2 · Feature breakdown</p>
+    <h2 class="s-title">Category Cards &amp; Spending Control</h2>
+    <p class="s-sub">Phần lớn giá trị sản phẩm nằm ở đây — và cũng là phần nhiều rule nhất.</p>
+    <div class="grid g-2-1">
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead><tr><th>ID</th><th>Feature</th><th>Ràng buộc</th></tr></thead>
+          <tbody>
+            <tr><td class="n">F2.1</td><td><b>Tạo card theo category</b><br>SaaS · AI · Advertising · Cloud · Other.</td><td>Category là enum, không phải free text — để report gom nhóm được.</td></tr>
+            <tr><td class="n">F2.2</td><td><b>Allocate treasury → card</b></td><td>Từ chối nếu vượt unallocated balance.</td></tr>
+            <tr><td class="n">F2.3</td><td><b>Set / update spending limit</b></td><td>Limit tách rời balance — xem callout bên phải.</td></tr>
+            <tr><td class="n">F2.4</td><td><b>Rebalance giữa các card</b><br>Chuyển balance card A → card B.</td><td>Tổng không đổi; cả hai card phải tồn tại.</td></tr>
+            <tr><td class="n">F2.5</td><td><b>Card status</b><br>Active ⇄ Frozen.</td><td>Card Frozen phải từ chối mọi spend ngay ở bước kiểm tra đầu tiên.</td></tr>
+            <tr><td class="n">F2.6</td><td><b>Validation entry point</b><br>Kiểm tra theo đúng thứ tự: status → remaining limit → card balance → treasury solvency.</td><td>Thứ tự kiểm tra quyết định reason code trả về, nên phải cố định.</td></tr>
+            <tr><td class="n">F2.7</td><td><b>Ghi kết quả on-chain</b><br>Approved / Declined kèm reason code.</td><td>Xem quyết định #4 ở slide rủi ro về chi phí ghi decline.</td></tr>
+            <tr><td class="n">F2.8</td><td><b>Query</b><br>Danh sách card, chi tiết card, lịch sử spend theo card.</td><td>Là nguồn dữ liệu cho dashboard và report.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="grid" style="gap:12px;align-content:start">
+        <div class="callout">
+          <span class="lbl">Đừng gộp hai khái niệm</span>
+          <p><b>Balance</b> là tiền thật đã allocate cho card. <b>Limit</b> là trần chi tiêu trong một chu kỳ. Một card có thể còn balance nhưng hết limit, và ngược lại. Gộp chúng lại là lỗi thiết kế khó sửa nhất về sau — trên UI cũng phải là hai thanh riêng.</p>
+        </div>
+        <div class="card card--accent">
+          <span class="idx" style="color:var(--accent)">BẤT BIẾN SỐ MỘT</span>
+          <p class="mono" style="color:var(--ink);font-size:13.5px">Σ card.balance + unallocated<br>= số dư USDC contract đang giữ</p>
+          <p style="margin-top:8px">Mọi entry point làm thay đổi tiền đều phải kiểm lại bất biến này trong test.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="slide" data-sec="Kiến trúc &amp; Feature" data-title="Feature D3 — Withdrawal &amp; Reconciliation">
+  <div class="slide-inner">
+    <p class="eyebrow">Deliverable 3 · Feature breakdown</p>
+    <h2 class="s-title">Withdrawal &amp; Reconciliation</h2>
+    <p class="s-sub">Khép vòng từ virtual card có stablecoin tới settlement thật, mỗi bước đều truy vết được.</p>
+    <div class="grid g-2-1">
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead><tr><th>ID</th><th>Feature</th><th>Ràng buộc</th></tr></thead>
+          <tbody>
+            <tr><td class="n">F3.1</td><td><b>Settlement whitelist</b><br>Thêm / gỡ địa chỉ nhận.</td><td>Chỉ admin. Gỡ địa chỉ không được ảnh hưởng record cũ.</td></tr>
+            <tr><td class="n">F3.2</td><td><b>Withdraw &amp; settle</b><br>Trừ đúng số tiền khỏi card gốc, transfer USDC tới settlement address.</td><td>Trừ từ <b>đúng card đã phát sinh spend</b>, không phải từ unallocated.</td></tr>
+            <tr><td class="n">F3.3</td><td><b>Ba lớp guard</b><br>Chỉ authorized operator · chỉ whitelisted address · chỉ tối đa bằng số đã record ở spend.</td><td>Vi phạm bất kỳ lớp nào đều panic, không im lặng bỏ qua.</td></tr>
+            <tr><td class="n">F3.4</td><td><b>Reconciliation record</b><br>Nối settlement với spend gốc qua <span class="mono">spend_id</span>.</td><td>Một spend không được settle hai lần.</td></tr>
+            <tr><td class="n">F3.5</td><td><b>Reconciliation ledger query</b></td><td>Xuất được dạng bảng để làm evidence.</td></tr>
+          </tbody>
+        </table>
+        <div class="callout" style="margin-top:14px">
+          <span class="lbl">Giới hạn của Phase 1 — nói rõ trong SOW</span>
+          <p>Settlement address là <b>placeholder whitelisted account</b>. Không có chuyển đổi stablecoin sang fiat thật, không có tích hợp card issuer. Đừng build thêm gì quanh phần này.</p>
+        </div>
+      </div>
+      <div class="grid" style="gap:12px;align-content:start">
+        <div class="card card--flat">
+          <span class="idx">TẠI SAO QUAN TRỌNG</span>
+          <p style="color:var(--ink)">Đây là phần duy nhất tiền rời khỏi contract. Nó cũng là bằng chứng thuyết phục nhất cho Chapter Lead: một transaction hash trên Stellar Expert nối thẳng về một spend record cụ thể.</p>
+        </div>
+        <div class="card card--accent">
+          <span class="idx" style="color:var(--accent)">BẤT BIẾN SỐ HAI</span>
+          <p style="color:var(--ink)">Với mọi settlement: <span class="mono">amount ≤ spend.amount</span> và <span class="mono">spend.status == Approved</span> và <span class="mono">spend.settled == false</span> trước khi thực thi.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 09 -->
+<section class="slide" data-sec="Kiến trúc &amp; Feature" data-title="Data model">
+  <div class="slide-inner">
+    <p class="eyebrow">Data model</p>
+    <h2 class="s-title">State layout &amp; bất biến</h2>
+    <p class="s-sub">Chốt struct trước khi viết dòng code đầu tiên — đổi storage layout giữa chừng trên Soroban là đắt.</p>
+    <div class="grid g2">
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead><tr><th>Struct</th><th>Trường</th><th>Storage</th></tr></thead>
+          <tbody>
+            <tr><td><b class="mono">Config</b></td><td class="mono">admin · token · initialized</td><td><span class="chip">instance</span></td></tr>
+            <tr><td><b class="mono">Roles</b></td><td class="mono">Map&lt;Address, Role&gt;</td><td><span class="chip">instance</span></td></tr>
+            <tr><td><b class="mono">Treasury</b></td><td class="mono">total_deposited<br>total_allocated<br>total_settled</td><td><span class="chip">instance</span></td></tr>
+            <tr><td><b class="mono">Card</b></td><td class="mono">id · category · label<br>balance · limit · limit_window<br>spent_in_window · status</td><td><span class="chip chip--acc">persistent</span></td></tr>
+            <tr><td><b class="mono">SpendRecord</b></td><td class="mono">id · card_id · amount<br>merchant_ref · decision<br>reason_code · settled</td><td><span class="chip chip--acc">persistent</span></td></tr>
+            <tr><td><b class="mono">Settlement</b></td><td class="mono">id · spend_id · card_id<br>amount · to_address</td><td><span class="chip chip--acc">persistent</span></td></tr>
+            <tr><td><b class="mono">Whitelist</b></td><td class="mono">Map&lt;Address, bool&gt;</td><td><span class="chip">instance</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="grid" style="gap:12px;align-content:start">
+        <div class="card card--accent">
+          <span class="idx" style="color:var(--accent)">HAI BẤT BIẾN PHẢI TEST SAU MỖI ENTRY POINT</span>
+          <ul class="list" style="margin-top:8px">
+            <li><b>Solvency:</b> <span class="mono">Σ card.balance + unallocated == token.balance(contract)</span></li>
+            <li><b>Không settle trùng:</b> mỗi <span class="mono">spend_id</span> xuất hiện tối đa một lần trong Settlement</li>
+          </ul>
+        </div>
+        <div class="callout">
+          <span class="lbl">TTL &amp; archival — vấn đề rất thật của Soroban</span>
+          <p>Card và record nằm ở persistent storage nên có TTL và sẽ bị archive. Hai lựa chọn: bump TTL mỗi lần ghi, hoặc chỉ emit event cho record lịch sử và để off-chain index giữ lâu dài. Chốt hướng nào trước Day 5 — nó ảnh hưởng cả module <span class="mono">rpc::indexer</span>.</p>
+        </div>
+        <div class="card card--flat">
+          <span class="idx">EVENT LÀ HẠ TẦNG, KHÔNG PHẢI TRANG TRÍ</span>
+          <p style="color:var(--ink)">Mỗi mutation phát một event đủ trường để dựng lại state. Đây là cách demo console và indexer lấy dữ liệu mà không phải gọi hàng chục view function.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="slide" data-sec="Kiến trúc &amp; Feature" data-title="Contract API surface">
+  <div class="slide-inner">
+    <p class="eyebrow">Entry points</p>
+    <h2 class="s-title">API surface cần freeze trước Day 1</h2>
+    <p class="s-sub">Danh sách này là hợp đồng giữa contract, gateway, indexer và demo console. Đổi sau Day 3 là đổi cả ba phía.</p>
+    <div class="tblwrap">
+      <table class="tbl">
+        <thead><tr><th>Entry point</th><th>Ai gọi</th><th>Mô tả</th><th>D</th></tr></thead>
+        <tbody>
+          <tr><td class="n">initialize(admin, token, operators)</td><td><span class="chip">deployer</span></td><td>Khởi tạo một lần, set token USDC và admin.</td><td class="n">D1</td></tr>
+          <tr><td class="n">grant_role(addr, role) / revoke_role(addr)</td><td><span class="chip chip--brass">admin</span></td><td>Quản lý admin và operator.</td><td class="n">D1</td></tr>
+          <tr><td class="n">deposit(from, amount)</td><td><span class="chip">bất kỳ</span></td><td>Transfer USDC vào contract, cần auth của <span class="mono">from</span>.</td><td class="n">D1</td></tr>
+          <tr><td class="n">create_card(category, label, limit)</td><td><span class="chip chip--brass">admin</span></td><td>Tạo card cho một category chi phí.</td><td class="n">D2</td></tr>
+          <tr><td class="n">allocate(card_id, amount)</td><td><span class="chip chip--brass">admin</span></td><td>Chuyển từ unallocated sang card. Reject nếu vượt.</td><td class="n">D2</td></tr>
+          <tr><td class="n">deallocate(card_id, amount)</td><td><span class="chip chip--brass">admin</span></td><td>Trả tiền từ card về unallocated.</td><td class="n">D2</td></tr>
+          <tr><td class="n">transfer_between_cards(from, to, amount)</td><td><span class="chip chip--brass">admin</span></td><td>Rebalance giữa hai card.</td><td class="n">D2</td></tr>
+          <tr><td class="n">set_limit(card_id, limit)</td><td><span class="chip chip--brass">admin</span></td><td>Đặt trần chi tiêu theo chu kỳ.</td><td class="n">D2</td></tr>
+          <tr><td class="n">set_card_status(card_id, status)</td><td><span class="chip chip--brass">admin</span> <span class="chip chip--acc">operator</span></td><td>Freeze / unfreeze card.</td><td class="n">D2</td></tr>
+          <tr><td class="n">authorize_spend(card_id, amount, ref) → Decision</td><td><span class="chip chip--acc">operator</span></td><td>Bốn bước kiểm tra, ghi record Approved / Declined.</td><td class="n">D2</td></tr>
+          <tr><td class="n">add_whitelist(addr) / remove_whitelist(addr)</td><td><span class="chip chip--brass">admin</span></td><td>Quản lý danh sách địa chỉ settlement hợp lệ.</td><td class="n">D3</td></tr>
+          <tr><td class="n">settle(spend_id, to, amount)</td><td><span class="chip chip--acc">operator</span></td><td>Trừ card gốc, transfer USDC, ghi reconciliation.</td><td class="n">D3</td></tr>
+          <tr><td class="n">get_treasury() · list_cards() · get_card(id)</td><td><span class="chip">view</span></td><td>Đọc state cho dashboard và report.</td><td class="n">D1·D2</td></tr>
+          <tr><td class="n">list_spends(card_id) · get_settlement(id)</td><td><span class="chip">view</span></td><td>Lịch sử giao dịch và sổ đối soát.</td><td class="n">D2·D3</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="slide" data-sec="Flow" data-title="Flow 1 — Deposit">
+  <div class="slide-inner">
+    <p class="eyebrow">Flow 01 · Deliverable 1</p>
+    <h2 class="s-title">Nạp USDC vào treasury</h2>
+    <p class="s-sub">Đường đi ngắn nhất trong hệ thống, nhưng là nơi mọi con số sau này neo vào.</p>
+    <div class="figbox">
+      <figure>
+        <svg class="dg" viewBox="0 0 960 220" role="img" aria-label="Flow deposit: Org Admin gọi deposit trên treasury contract, contract gọi token transfer của USDC SAC, USDC chuyển vào contract, sau đó emit event deposit.">
+          <text class="t-arw" x="242" y="46" text-anchor="middle">deposit(from, amount)</text>
+          <text class="t-arw" x="562" y="46" text-anchor="middle">token.transfer</text>
+          <text class="t-arw" x="787" y="46" text-anchor="middle">emit</text>
+          <rect class="bx" x="10" y="64" width="180" height="76" rx="2"/>
+          <text x="26" y="92">Org Admin</text><text class="t-sm" x="26" y="110">ký transaction</text><text class="t-sm" x="26" y="126">giữ USDC</text>
+          <rect class="bx-acc" x="300" y="64" width="210" height="76" rx="2"/>
+          <text x="316" y="92">Treasury contract</text><text class="t-sm" x="316" y="110">kiểm token đúng cấu hình</text><text class="t-sm" x="316" y="126">amount &gt; 0</text>
+          <rect class="bx" x="620" y="64" width="150" height="76" rx="2"/>
+          <text x="636" y="92">USDC SAC</text><text class="t-sm" x="636" y="110">Stellar Asset</text><text class="t-sm" x="636" y="126">Contract</text>
+          <rect class="bx-2" x="810" y="64" width="140" height="76" rx="2"/>
+          <text x="826" y="92">Event</text><text class="t-sm" x="826" y="110">deposit</text>
+          <path class="ln" d="M190,102 H294" marker-end="url(#ah)"/>
+          <path class="ln" d="M510,90 H614" marker-end="url(#ah)"/>
+          <path class="ln-d" d="M614,118 H514" marker-end="url(#ah)"/>
+          <text class="t-sm" x="562" y="160" text-anchor="middle">USDC vào contract</text>
+          <path class="ln" d="M770,102 H804" marker-end="url(#ah)"/>
+          <rect class="bx-2" x="300" y="176" width="650" height="34" rx="2"/>
+          <text class="t-lab" x="316" y="197">STATE: total_deposited += amount · unallocated += amount</text>
+        </svg>
+        <figcaption>Contract không tự kéo tiền — người nạp phải ký authorization cho <span class="mono">transfer</span>. Đây là lý do <span class="mono">deposit</span> nhận tham số <span class="mono">from</span> thay vì đọc caller.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="slide" data-sec="Flow" data-title="Flow 2 — Allocation">
+  <div class="slide-inner">
+    <p class="eyebrow">Flow 02 · Deliverable 2</p>
+    <h2 class="s-title">Chia treasury thành card theo category</h2>
+    <p class="s-sub">Guardrail đầu tiên: không bao giờ allocate quá số chưa phân bổ.</p>
+    <div class="figbox">
+      <figure>
+        <svg class="dg" viewBox="0 0 960 350" role="img" aria-label="Flow allocation: từ unallocated balance qua guard kiểm tra amount nhỏ hơn hoặc bằng unallocated, chia sang bốn card SaaS, AI, Advertising, Cloud; nếu vượt thì panic OVER_ALLOCATION.">
+          <text class="t-arw" x="252" y="150" text-anchor="middle">allocate(card_id, amount)</text>
+          <rect class="bx-acc" x="20" y="160" width="190" height="80" rx="2"/>
+          <text x="36" y="188">Unallocated</text><text class="t-sm" x="36" y="206">treasury chưa chia</text><text class="t-sm" x="36" y="224">nguồn duy nhất</text>
+          <path class="ln" d="M210,200 H294" marker-end="url(#ah)"/>
+          <rect class="bx-brass" x="300" y="160" width="200" height="80" rx="2"/>
+          <text x="316" y="188">Guard</text><text class="t-sm" x="316" y="206">amount ≤ unallocated?</text><text class="t-sm" x="316" y="224">caller là admin?</text>
+          <path class="ln-acc" d="M500,200 H560 V57 H614" marker-end="url(#ah-acc)"/>
+          <path class="ln-acc" d="M560,200 H614" marker-end="url(#ah-acc)"/>
+          <path class="ln-acc" d="M560,200 V123 H614" marker-end="url(#ah-acc)"/>
+          <path class="ln-acc" d="M560,200 V266 H614" marker-end="url(#ah-acc)"/>
+          <rect class="bx" x="620" y="30" width="320" height="54" rx="2"/>
+          <text x="636" y="52">Card · SaaS</text><text class="t-sm" x="636" y="70">balance riêng · limit riêng · status riêng</text>
+          <rect class="bx" x="620" y="96" width="320" height="54" rx="2"/>
+          <text x="636" y="118">Card · AI</text><text class="t-sm" x="636" y="136">balance riêng · limit riêng · status riêng</text>
+          <rect class="bx" x="620" y="173" width="320" height="54" rx="2"/>
+          <text x="636" y="195">Card · Advertising</text><text class="t-sm" x="636" y="213">balance riêng · limit riêng · status riêng</text>
+          <rect class="bx" x="620" y="239" width="320" height="54" rx="2"/>
+          <text x="636" y="261">Card · Cloud</text><text class="t-sm" x="636" y="279">balance riêng · limit riêng · status riêng</text>
+          <path class="ln-bad" d="M400,240 V286" marker-end="url(#ah-bad)"/>
+          <rect class="bx-bad" x="290" y="290" width="230" height="46" rx="2"/>
+          <text class="t-sm" x="304" y="311" style="fill:var(--bad)">panic · OVER_ALLOCATION</text>
+          <text class="t-sm" x="304" y="327" style="fill:var(--bad)">hoặc UNAUTHORIZED</text>
+        </svg>
+        <figcaption>Category là enum cố định, không phải free text — nếu để người dùng gõ tự do thì report gom nhóm theo cost category sẽ không bao giờ sạch.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 13 -->
+<section class="slide" data-sec="Flow" data-title="Flow 3 — Spend authorization">
+  <div class="slide-inner">
+    <p class="eyebrow">Flow 03 · Deliverable 2 · Flow quan trọng nhất</p>
+    <h2 class="s-title">Authorization chạy off-chain, ghi sổ on-chain</h2>
+    <p class="s-sub">Card network cần trả lời trong khoảng 2 giây; một ledger Stellar đóng khoảng 5 giây. Contract vì thế không thể nằm trong critical path.</p>
+    <div class="figbox">
+      <figure>
+        <svg class="dg" viewBox="0 0 960 420" role="img" aria-label="Flow authorization hai lane: lane off-chain gồm quẹt thẻ, auth gateway, quyết định dưới 2 giây, trả lời card network; lane on-chain gồm contract state, authorize_spend và SpendRecord. Gateway đọc constraint qua RPC và ghi record async, tạo ra cửa sổ race khoảng một ledger.">
+          <line class="hair" x1="0" y1="200" x2="960" y2="200"/>
+          <text class="t-hd" x="16" y="36">OFF-CHAIN · ms</text>
+          <text class="t-hd" x="16" y="232" style="fill:var(--brass)">ON-CHAIN · ~5s / LEDGER</text>
+          <text class="t-arw" x="187" y="40" text-anchor="middle">auth</text>
+          <text class="t-sm" x="427" y="40" text-anchor="middle">áp 4 rule</text>
+          <text class="t-arw" x="683" y="40" text-anchor="middle">APPROVED / DECLINED</text>
+
+          <rect class="bx-ghost" x="16" y="52" width="150" height="68" rx="2"/>
+          <text class="t-sm" x="30" y="80" style="fill:var(--ghost)">Quẹt thẻ</text>
+          <text class="t-sm" x="30" y="98" style="fill:var(--ghost)">ngoài scope</text>
+          <rect class="bx-brass" x="214" y="52" width="176" height="68" rx="2"/>
+          <text x="228" y="80">Auth gateway</text><text class="t-sm" x="228" y="98">off-chain service</text>
+          <rect class="bx-brass" x="470" y="52" width="176" height="68" rx="2"/>
+          <text x="484" y="80">Quyết định</text><text class="t-sm" x="484" y="98">trong ≤ 2s</text>
+          <rect class="bx-ghost" x="726" y="52" width="176" height="68" rx="2"/>
+          <text class="t-sm" x="740" y="80" style="fill:var(--ghost)">Trả lời network</text>
+          <text class="t-sm" x="740" y="98" style="fill:var(--ghost)">ngoài scope</text>
+
+          <rect class="bx-acc" x="214" y="252" width="176" height="68" rx="2"/>
+          <text x="228" y="280">Contract state</text><text class="t-sm" x="228" y="298">source of truth</text>
+          <rect class="bx-acc" x="470" y="252" width="176" height="68" rx="2"/>
+          <text x="484" y="280">authorize_spend()</text><text class="t-sm" x="484" y="298">ghi quyết định</text>
+          <rect class="bx-acc" x="726" y="252" width="176" height="68" rx="2"/>
+          <text x="740" y="280">SpendRecord</text><text class="t-sm" x="740" y="298">+ reason code</text>
+
+          <path class="ln-ghost" d="M166,86 H208" marker-end="url(#ah-ghost)"/>
+          <path class="ln" d="M390,86 H464" marker-end="url(#ah)"/>
+          <path class="ln" d="M646,86 H720" marker-end="url(#ah)"/>
+          <path class="ln-d" d="M302,120 V246" marker-start="url(#ah)" marker-end="url(#ah)"/>
+          <text class="t-sm" x="312" y="176">đọc constraint</text>
+          <text class="t-sm" x="312" y="192">qua RPC</text>
+          <path class="ln-acc" d="M558,120 V246" marker-end="url(#ah-acc)"/>
+          <text class="t-arw" x="568" y="176">ghi async</text>
+          <text class="t-sm" x="568" y="192">≥ 1 ledger sau</text>
+          <path class="ln-acc" d="M390,286 H464" marker-end="url(#ah-acc)"/>
+          <path class="ln-acc" d="M646,286 H720" marker-end="url(#ah-acc)"/>
+
+          <path class="ln" d="M470,384 H726" style="stroke:var(--brass)"/>
+          <path class="ln" d="M470,376 V392" style="stroke:var(--brass)"/>
+          <path class="ln" d="M726,376 V392" style="stroke:var(--brass)"/>
+          <text class="t-sm" x="598" y="368" text-anchor="middle" style="fill:var(--brass)">cửa sổ race ~1 ledger — xem quyết định #1</text>
+        </svg>
+        <figcaption>Bốn rule chạy đúng thứ tự: card status → remaining limit → card balance → treasury solvency. Thứ tự này quyết định reason code trả về, nên phải cố định giữa gateway và contract, nếu không hai bên sẽ báo lý do khác nhau cho cùng một giao dịch.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 14 -->
+<section class="slide" data-sec="Flow" data-title="Flow 4 — Settlement &amp; reconciliation">
+  <div class="slide-inner">
+    <p class="eyebrow">Flow 04 · Deliverable 3</p>
+    <h2 class="s-title">Từ spend đã duyệt tới transaction hash</h2>
+    <p class="s-sub">Ba lớp guard, một lần trừ tiền, một record đối soát.</p>
+    <div class="figbox">
+      <figure>
+        <svg class="dg" viewBox="0 0 960 300" role="img" aria-label="Flow settlement: SpendRecord đã Approved đi qua ba lớp guard, trừ card balance, transfer USDC tới settlement address, ghi settlement record; nếu guard thất bại thì panic.">
+          <rect class="bx-acc" x="16" y="100" width="180" height="76" rx="2"/>
+          <text x="30" y="128">SpendRecord</text><text class="t-sm" x="30" y="146">status = Approved</text><text class="t-sm" x="30" y="162">settled = false</text>
+          <path class="ln" d="M196,138 H266" marker-end="url(#ah)"/>
+          <text class="t-arw" x="231" y="84" text-anchor="middle">settle(spend_id)</text>
+          <rect class="bx-brass" x="272" y="100" width="210" height="76" rx="2"/>
+          <text x="286" y="128">Ba lớp guard</text><text class="t-sm" x="286" y="146">operator? whitelisted?</text><text class="t-sm" x="286" y="162">amount ≤ spend.amount?</text>
+          <path class="ln" d="M482,138 H552" marker-end="url(#ah)"/>
+          <rect class="bx-acc" x="558" y="100" width="180" height="76" rx="2"/>
+          <text x="572" y="128">Trừ card.balance</text><text class="t-sm" x="572" y="146">đúng card gốc</text><text class="t-sm" x="572" y="162">không lấy từ unallocated</text>
+          <path class="ln" d="M738,138 H784" marker-end="url(#ah)"/>
+          <rect class="bx" x="790" y="100" width="160" height="76" rx="2"/>
+          <text x="804" y="128">USDC ra</text><text class="t-sm" x="804" y="146">whitelisted</text><text class="t-sm" x="804" y="162">settlement address</text>
+          <path class="ln-bad" d="M377,176 V230" marker-end="url(#ah-bad)"/>
+          <rect class="bx-bad" x="250" y="234" width="300" height="52" rx="2"/>
+          <text class="t-sm" x="264" y="256" style="fill:var(--bad)">panic · UNAUTHORIZED · NOT_WHITELISTED</text>
+          <text class="t-sm" x="264" y="272" style="fill:var(--bad)">AMOUNT_EXCEEDS_SPEND · ALREADY_SETTLED</text>
+          <path class="ln" d="M870,176 V212" marker-end="url(#ah)"/>
+          <rect class="bx-2" x="588" y="216" width="362" height="66" rx="2"/>
+          <text class="t-lab" x="602" y="240">SETTLEMENT RECORD</text>
+          <text class="t-sm" x="602" y="262">spend_id ↔ card_id ↔ amount ↔ to_address ↔ tx</text>
+        </svg>
+        <figcaption>Record đối soát là thứ biến một transaction hash trên Stellar Expert thành bằng chứng có nghĩa: nó chỉ đúng về giao dịch card nào đã sinh ra khoản chi đó.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 15 -->
+<section class="slide" data-sec="Flow" data-title="State machine">
+  <div class="slide-inner">
+    <p class="eyebrow">State machine</p>
+    <h2 class="s-title">Vòng đời của card và của một khoản chi</h2>
+    <p class="s-sub">Hai máy trạng thái này là thứ test suite sẽ bám vào.</p>
+    <div class="figbox">
+      <figure>
+        <svg class="dg" viewBox="0 0 960 250" role="img" aria-label="Hai state machine: card chuyển qua lại giữa Active và Frozen; spend đi từ Pending sang Approved, Settled, Reconciled, hoặc rẽ sang Declined.">
+          <text class="t-hd" x="16" y="28">CARD STATUS</text>
+          <rect class="bx-ok" x="30" y="70" width="130" height="56" rx="2"/>
+          <text x="46" y="96">Active</text><text class="t-sm" x="46" y="114">nhận spend</text>
+          <rect class="bx-bad" x="240" y="70" width="130" height="56" rx="2"/>
+          <text x="256" y="96">Frozen</text><text class="t-sm" x="256" y="114">từ chối mọi spend</text>
+          <path class="ln" d="M160,86 H234" marker-end="url(#ah)"/>
+          <text class="t-arw" x="197" y="60" text-anchor="middle">freeze</text>
+          <path class="ln" d="M234,112 H166" marker-end="url(#ah)"/>
+          <text class="t-arw" x="200" y="146" text-anchor="middle">unfreeze</text>
+          <text class="t-sm" x="30" y="188">Card Frozen trả về reason code</text>
+          <text class="t-arw" x="30" y="206" style="fill:var(--bad)">CARD_FROZEN</text>
+          <line class="hair" x1="410" y1="10" x2="410" y2="240"/>
+
+          <text class="t-hd" x="440" y="28">SPEND LIFECYCLE</text>
+          <rect class="bx" x="440" y="70" width="110" height="52" rx="2"/>
+          <text class="t-sm" x="454" y="100">Pending</text>
+          <rect class="bx-ok" x="580" y="70" width="110" height="52" rx="2"/>
+          <text class="t-sm" x="594" y="100">Approved</text>
+          <rect class="bx-acc" x="720" y="70" width="110" height="52" rx="2"/>
+          <text class="t-sm" x="734" y="100">Settled</text>
+          <rect class="bx-acc" x="850" y="70" width="100" height="52" rx="2"/>
+          <text class="t-sm" x="862" y="100">Reconciled</text>
+          <path class="ln" d="M550,96 H574" marker-end="url(#ah)"/>
+          <path class="ln" d="M690,96 H714" marker-end="url(#ah)"/>
+          <path class="ln" d="M830,96 H844" marker-end="url(#ah)"/>
+          <path class="ln-bad" d="M495,122 V166" marker-end="url(#ah-bad)"/>
+          <rect class="bx-bad" x="440" y="170" width="110" height="52" rx="2"/>
+          <text class="t-sm" x="454" y="200" style="fill:var(--bad)">Declined</text>
+          <text class="t-sm" x="580" y="190">Reconciled = indexer đã đối chiếu</text>
+          <text class="t-sm" x="580" y="208">record on-chain với transaction thật</text>
+        </svg>
+        <figcaption>Đây là mô hình tối giản đúng phạm vi SOW 1.</figcaption>
+      </figure>
+    </div>
+    <div class="callout" style="margin-top:14px">
+      <span class="lbl">Khoảng trống so với card network thật — cần biết để không thiết kế bít đường</span>
+      <p>Mạng thẻ thật có <b>authorization rồi mới capture</b>, và số tiền capture có thể khác số tiền auth (tip, partial capture), cộng thêm void, refund và chargeback. SOW 1 chỉ mô hình hoá approved/declined và settle. Đừng build thêm các state đó ở Phase 1, nhưng hãy để <span class="mono">SpendRecord</span> có chỗ mở rộng thay vì khoá cứng ở hai trạng thái.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 16 -->
+<section class="slide" data-sec="UI/UX" data-title="UI/UX — hai track và năm nguyên tắc">
+  <div class="slide-inner">
+    <p class="eyebrow">UI / UX</p>
+    <h2 class="s-title">Giao diện nào thực sự thuộc SOW 1</h2>
+    <div class="callout" style="margin-bottom:18px">
+      <span class="lbl">Xử lý mâu thuẫn giữa mục 4.1 và mục 6</span>
+      <p>Mục 4.1 ghi <b>frontend và backend application layer là out-of-scope</b>. Mục 6 lại yêu cầu evidence phải review được bởi Chapter Lead <b>với minimal technical expertise</b>. Cách duy nhất thoả cả hai: một <b>demo &amp; verification console</b> mỏng, chỉ đọc và mô phỏng, tính vào line <span class="mono">Deploy + Demo ($1,000)</span> — không phải product frontend.</p>
+    </div>
+    <div class="grid g2">
+      <div class="card card--accent">
+        <span class="idx" style="color:var(--accent)">TRACK A · GIAO TRONG SOW 1</span>
+        <h3>Demo &amp; Verification Console</h3>
+        <p>Năm màn hình, đọc dữ liệu từ contract event qua RPC indexer, cộng một màn mô phỏng spend. Mục tiêu duy nhất: người không rành kỹ thuật vẫn xác nhận được ba deliverable.</p>
+        <div class="chips" style="margin-top:10px">
+          <span class="chip chip--ok">Read-only + demo action</span><span class="chip">Không auth</span><span class="chip">Không multi-user</span><span class="chip">Testnet</span>
+        </div>
+      </div>
+      <div class="card card--ghost">
+        <span class="idx">TRACK B · THAM CHIẾU CHO PHASE 2</span>
+        <h3>Product dashboard</h3>
+        <p>Vẽ ở mức wireframe ngay bây giờ, <b>không build</b>. Lý do: nếu contract API không phục vụ nổi màn hình thật, Phase 2 sẽ phải đập contract đi làm lại. Wireframe là cách rẻ nhất để kiểm tra điều đó trong tuần này.</p>
+      </div>
+    </div>
+    <div class="hr"></div>
+    <h3 style="font-size:19px;margin-bottom:12px">Năm nguyên tắc UX ràng buộc ngược lại thiết kế contract</h3>
+    <div class="grid g3">
+      <div class="card card--flat"><span class="idx">01</span><p style="color:var(--ink)"><b>Mọi con số truy được về một tx hash.</b> Nếu màn hình hiện một số mà không click ra được Stellar Expert, số đó chưa phải evidence.</p></div>
+      <div class="card card--flat"><span class="idx">02</span><p style="color:var(--ink)"><b>Decline phải nói lý do.</b> Hiện đúng reason code, không phải chữ “failed”. Đây là lý do contract cần reason code chứ không chỉ boolean.</p></div>
+      <div class="card card--flat"><span class="idx">03</span><p style="color:var(--ink)"><b>Guardrail hiện trước khi submit.</b> Còn bao nhiêu limit, còn bao nhiêu unallocated — người dùng thấy trước, không bị từ chối rồi mới đoán.</p></div>
+      <div class="card card--flat"><span class="idx">04</span><p style="color:var(--ink)"><b>Balance và limit là hai thanh riêng.</b> Gộp lại là hiểu sai bản chất; UI phải phản ánh đúng hai ràng buộc độc lập.</p></div>
+      <div class="card card--flat"><span class="idx">05</span><p style="color:var(--ink)"><b>Tách trạng thái off-chain và on-chain.</b> “Approved” và “đã ghi on-chain” là hai mốc khác nhau, cách nhau ít nhất một ledger.</p></div>
+      <div class="card card--accent"><span class="idx" style="color:var(--accent)">HỆ QUẢ</span><p style="color:var(--ink)">Nguyên tắc 02 và 05 buộc contract phải trả về <span class="mono">reason_code</span> và lưu <span class="mono">ledger_seq</span>. Cả hai nằm sẵn trong data model ở slide 09.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 17 -->
+<section class="slide" data-sec="UI/UX" data-title="Wireframe — Treasury &amp; Cards">
+  <div class="slide-inner">
+    <p class="eyebrow">Wireframe · màn A và B</p>
+    <h2 class="s-title">Treasury Overview &amp; Cards Grid</h2>
+    <p class="s-sub">Số liệu trong wireframe là ví dụ minh hoạ luồng, không phải dữ liệu thật.</p>
+    <div class="grid g2">
+      <div class="wire">
+        <div class="wire-bar"><i class="dot"></i><span>Màn A · Treasury Overview</span></div>
+        <div class="wire-row">
+          <div class="wbox"><span class="lab">Total deposited</span><span class="val">250,000.00</span></div>
+          <div class="wbox"><span class="lab">Allocated</span><span class="val">182,500.00</span><div class="meter"><i style="width:73%"></i></div></div>
+          <div class="wbox"><span class="lab">Unallocated</span><span class="val">67,500.00</span><div class="meter brass"><i style="width:27%"></i></div></div>
+        </div>
+        <div class="wline"></div>
+        <div class="wbox" style="flex:none">
+          <span class="lab">Deposit history</span>
+          <table class="tbl" style="min-width:0;margin-top:6px">
+            <thead><tr><th>Thời gian</th><th>Từ</th><th>Số tiền</th><th>Tx</th></tr></thead>
+            <tbody>
+              <tr><td class="n">14:02 · 18/08</td><td class="n">GA3F…K92</td><td class="n">120,000.00</td><td><span class="chip chip--acc">a7f2…c1</span></td></tr>
+              <tr><td class="n">09:41 · 12/08</td><td class="n">GA3F…K92</td><td class="n">80,000.00</td><td><span class="chip chip--acc">4b19…de</span></td></tr>
+              <tr><td class="n">16:20 · 05/08</td><td class="n">GB7Q…L04</td><td class="n">50,000.00</td><td><span class="chip chip--acc">91c0…7a</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:12.5px;color:var(--ink-faint);margin-top:9px">Nguyên tắc 01: cột Tx là link Stellar Expert, không phải chuỗi tĩnh.</p>
+      </div>
+      <div class="wire">
+        <div class="wire-bar"><i class="dot"></i><span>Màn B · Cards Grid</span></div>
+        <div class="grid g2" style="gap:9px">
+          <div class="wbox">
+            <span class="lab">SaaS</span><span class="val">42,300.00</span>
+            <div class="meter"><i style="width:56%"></i></div>
+            <div class="meter brass"><i style="width:31%"></i></div>
+            <div class="chips" style="margin-top:8px"><span class="chip chip--ok">Active</span><span class="chip">18 spend</span></div>
+          </div>
+          <div class="wbox">
+            <span class="lab">AI Tools</span><span class="val">61,000.00</span>
+            <div class="meter"><i style="width:82%"></i></div>
+            <div class="meter brass"><i style="width:74%"></i></div>
+            <div class="chips" style="margin-top:8px"><span class="chip chip--ok">Active</span><span class="chip chip--warn">limit gần trần</span></div>
+          </div>
+          <div class="wbox">
+            <span class="lab">Advertising</span><span class="val">54,200.00</span>
+            <div class="meter"><i style="width:64%"></i></div>
+            <div class="meter brass"><i style="width:12%"></i></div>
+            <div class="chips" style="margin-top:8px"><span class="chip chip--ok">Active</span><span class="chip">7 spend</span></div>
+          </div>
+          <div class="wbox">
+            <span class="lab">Cloud</span><span class="val">25,000.00</span>
+            <div class="meter"><i style="width:30%"></i></div>
+            <div class="meter brass"><i style="width:0%"></i></div>
+            <div class="chips" style="margin-top:8px"><span class="chip chip--bad">Frozen</span><span class="chip">0 spend</span></div>
+          </div>
+        </div>
+        <p style="font-size:12.5px;color:var(--ink-faint);margin-top:11px">
+          Nguyên tắc 04: thanh trên là <b style="color:var(--accent)">balance đã dùng</b>, thanh dưới là <b style="color:var(--brass)">limit đã tiêu trong chu kỳ</b>. Card “AI Tools” còn tiền nhưng sắp hết limit — đúng tình huống mà một thanh gộp sẽ giấu mất.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 18 -->
+<section class="slide" data-sec="UI/UX" data-title="Wireframe — Card detail, Simulator, Reconciliation">
+  <div class="slide-inner">
+    <p class="eyebrow">Wireframe · màn C, D, E</p>
+    <h2 class="s-title">Card Detail · Spend Simulator · Reconciliation</h2>
+    <div class="grid g3">
+      <div class="wire">
+        <div class="wire-bar"><i class="dot"></i><span>Màn C · Card Detail</span></div>
+        <div class="wbox" style="flex:none">
+          <div class="chips" style="justify-content:space-between"><span class="chip chip--acc">AI Tools</span><span class="chip chip--ok">Active</span></div>
+          <div style="margin-top:10px"><span class="lab">Balance</span><span class="val">61,000.00</span><div class="meter"><i style="width:82%"></i></div></div>
+          <div style="margin-top:9px"><span class="lab">Limit chu kỳ</span><span class="val">37,000 / 50,000</span><div class="meter brass"><i style="width:74%"></i></div></div>
+        </div>
+        <div class="wline"></div>
+        <div class="wire-row">
+          <div class="wbox" style="text-align:center"><span class="sm">Allocate</span></div>
+          <div class="wbox" style="text-align:center"><span class="sm">Set limit</span></div>
+          <div class="wbox" style="text-align:center"><span class="sm">Freeze</span></div>
+        </div>
+        <div class="wline"></div>
+        <span class="lab" style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)">Spend history</span>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-top:7px">
+          <div class="wbox" style="display:flex;justify-content:space-between;gap:8px;padding:7px 9px"><span class="sm mono">2,400.00</span><span class="chip chip--ok">Approved</span></div>
+          <div class="wbox" style="display:flex;justify-content:space-between;gap:8px;padding:7px 9px"><span class="sm mono">18,900.00</span><span class="chip chip--bad">LIMIT_EXCEEDED</span></div>
+          <div class="wbox" style="display:flex;justify-content:space-between;gap:8px;padding:7px 9px"><span class="sm mono">960.00</span><span class="chip chip--acc">Settled</span></div>
+        </div>
+      </div>
+
+      <div class="wire">
+        <div class="wire-bar"><i class="dot"></i><span>Màn D · Spend Simulator</span></div>
+        <div class="wire-row" style="flex-direction:column">
+          <div class="wbox"><span class="lab">Card</span><span class="sm mono">AI Tools · card_02</span></div>
+          <div class="wbox"><span class="lab">Amount</span><span class="sm mono">18,900.00 USDC</span></div>
+          <div class="wbox"><span class="lab">Merchant ref</span><span class="sm mono">openai-sub-0824</span></div>
+        </div>
+        <div class="wline"></div>
+        <span class="lab" style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)">Bốn bước kiểm tra</span>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-top:7px">
+          <div class="wbox" style="display:flex;justify-content:space-between;gap:8px;padding:7px 9px"><span class="sm">1 · Card status</span><span class="chip chip--ok">Active</span></div>
+          <div class="wbox" style="display:flex;justify-content:space-between;gap:8px;padding:7px 9px"><span class="sm">2 · Remaining limit</span><span class="chip chip--bad">13,000 &lt; 18,900</span></div>
+          <div class="wbox" style="display:flex;justify-content:space-between;gap:8px;padding:7px 9px;opacity:.5"><span class="sm">3 · Card balance</span><span class="chip">bỏ qua</span></div>
+          <div class="wbox" style="display:flex;justify-content:space-between;gap:8px;padding:7px 9px;opacity:.5"><span class="sm">4 · Treasury solvency</span><span class="chip">bỏ qua</span></div>
+        </div>
+        <div class="wbox" style="margin-top:9px;border-color:var(--bad)">
+          <span class="lab" style="color:var(--bad)">Kết quả</span>
+          <span class="sm mono" style="color:var(--bad);font-size:14px">DECLINED · LIMIT_EXCEEDED</span>
+          <div style="margin-top:7px"><span class="chip chip--acc">tx 3e91…b7</span></div>
+        </div>
+      </div>
+
+      <div class="wire">
+        <div class="wire-bar"><i class="dot"></i><span>Màn E · Reconciliation</span></div>
+        <div class="wbox" style="flex:none">
+          <table class="tbl" style="min-width:0">
+            <thead><tr><th>Spend</th><th>Card</th><th>Số tiền</th><th>Tx</th></tr></thead>
+            <tbody>
+              <tr><td class="n">sp_118</td><td>SaaS</td><td class="n">2,400.00</td><td><span class="chip chip--acc">a7f2…c1</span></td></tr>
+              <tr><td class="n">sp_119</td><td>Ads</td><td class="n">12,000.00</td><td><span class="chip chip--acc">6d40…9f</span></td></tr>
+              <tr><td class="n">sp_121</td><td>AI</td><td class="n">960.00</td><td><span class="chip chip--warn">đang chờ</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="wline"></div>
+        <div class="wire-row">
+          <div class="wbox"><span class="lab">Đã đối soát</span><span class="val">2 / 3</span></div>
+          <div class="wbox" style="text-align:center;display:flex;align-items:center;justify-content:center"><span class="sm">Export CSV</span></div>
+        </div>
+        <p style="font-size:12.5px;color:var(--ink-faint);margin-top:9px">Màn này chính là evidence của Deliverable 3: mỗi dòng nối một spend cụ thể với một transaction thật.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 19 -->
+<section class="slide" data-sec="Release plan" data-title="Module release — contract layer">
+  <div class="slide-inner">
+    <p class="eyebrow">Release scope · 1 / 2</p>
+    <h2 class="s-title">Mười ba module contract phải release ở SOW 1</h2>
+    <p class="s-sub">Mỗi module có một definition of done kiểm chứng được — không có “xong khoảng chừng”.</p>
+    <div class="tblwrap">
+      <table class="tbl">
+        <thead><tr><th>#</th><th>Module</th><th>D</th><th>Definition of done</th></tr></thead>
+        <tbody>
+          <tr><td class="n">M1</td><td class="n">core::config</td><td class="n">D1</td><td><span class="mono">initialize</span> chỉ chạy được một lần; token và admin đọc lại đúng; gọi lần hai panic.</td></tr>
+          <tr><td class="n">M2</td><td class="n">core::roles</td><td class="n">D1</td><td>Grant / revoke chạy đúng; mọi entry point admin-only panic khi caller sai; không revoke được admin cuối cùng.</td></tr>
+          <tr><td class="n">M3</td><td class="n">treasury::deposit</td><td class="n">D1</td><td>USDC vào contract; <span class="mono">total_deposited</span> và <span class="mono">unallocated</span> tăng đúng; event đủ trường.</td></tr>
+          <tr><td class="n">M4</td><td class="n">treasury::accounting</td><td class="n">D1</td><td>View trả ba con số; bất biến solvency đúng sau <b>mọi</b> entry point trong test.</td></tr>
+          <tr><td class="n">M5</td><td class="n">cards::registry</td><td class="n">D2</td><td><span class="mono">create_card</span> sinh id tăng dần; <span class="mono">list_cards</span> / <span class="mono">get_card</span> đúng; category là enum.</td></tr>
+          <tr><td class="n">M6</td><td class="n">cards::allocation</td><td class="n">D2</td><td>Allocate / deallocate / rebalance đúng; vượt unallocated thì panic <span class="mono">OVER_ALLOCATION</span>.</td></tr>
+          <tr><td class="n">M7</td><td class="n">cards::limits</td><td class="n">D2</td><td><span class="mono">set_limit</span> chạy; <span class="mono">spent_in_window</span> cộng dồn đúng khi approved và reset theo chu kỳ đã chốt.</td></tr>
+          <tr><td class="n">M8</td><td class="n">cards::status</td><td class="n">D2</td><td>Freeze / unfreeze; card Frozen làm <span class="mono">authorize_spend</span> trả <span class="mono">CARD_FROZEN</span> ngay bước một.</td></tr>
+          <tr><td class="n">M9</td><td class="n">spend::authorize</td><td class="n">D2</td><td>Bốn bước đúng thứ tự; sinh SpendRecord kèm decision và reason code; approved thì limit đã tiêu tăng.</td></tr>
+          <tr><td class="n">M10</td><td class="n">settle::whitelist</td><td class="n">D3</td><td>Add / remove chỉ admin; settle tới địa chỉ ngoài whitelist panic <span class="mono">NOT_WHITELISTED</span>.</td></tr>
+          <tr><td class="n">M11</td><td class="n">settle::withdraw</td><td class="n">D3</td><td>Trừ đúng card gốc; transfer USDC ra ngoài; cả ba guard đều có test âm.</td></tr>
+          <tr><td class="n">M12</td><td class="n">settle::reconciliation</td><td class="n">D3</td><td>Settlement record link <span class="mono">spend_id</span>; settle lần hai panic <span class="mono">ALREADY_SETTLED</span>; query ra bảng đối soát.</td></tr>
+          <tr><td class="n">M13</td><td class="n">events</td><td class="n">D1·D2·D3</td><td>Mọi mutation phát event; indexer dựng lại được toàn bộ state chỉ từ event stream.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 20 -->
+<section class="slide" data-sec="Release plan" data-title="Module release — test, off-chain, tooling">
+  <div class="slide-inner">
+    <p class="eyebrow">Release scope · 2 / 2</p>
+    <h2 class="s-title">Sáu module còn lại — và cái nào không được cắt</h2>
+    <div class="tblwrap">
+      <table class="tbl">
+        <thead><tr><th>#</th><th>Module</th><th>Lớp</th><th>Ưu tiên</th><th>Definition of done</th></tr></thead>
+        <tbody>
+          <tr><td class="n">M14</td><td class="n">tests::unit</td><td><span class="chip">test</span></td><td><span class="chip chip--bad">Must</span></td><td>Mọi entry point có cả happy path và revert path.</td></tr>
+          <tr><td class="n">M15</td><td class="n">tests::integration</td><td><span class="chip">test</span></td><td><span class="chip chip--bad">Must</span></td><td>Đủ bốn nhóm case SOW nêu đích danh: approved / declined, over-limit, over-allocation, role permission.</td></tr>
+          <tr><td class="n">M16</td><td class="n">rpc::indexer</td><td><span class="chip chip--acc">off-chain</span></td><td><span class="chip chip--bad">Must</span></td><td>Lấy và validate deposit tx cùng settlement tx qua Stellar RPC; đối chiếu ra trạng thái Reconciled.</td></tr>
+          <tr><td class="n">M17</td><td class="n">deploy::scripts</td><td><span class="chip">tooling</span></td><td><span class="chip chip--bad">Must</span></td><td>Build → optimize → deploy testnet bằng một lệnh; kèm script seed dữ liệu demo.</td></tr>
+          <tr><td class="n">M18</td><td class="n">demo::console</td><td><span class="chip">tooling</span></td><td><span class="chip chip--warn">Should</span></td><td>Năm màn hình chạy trên testnet, mọi số liệu link ra Stellar Expert. Là cách duy nhất thoả yêu cầu “minimal technical expertise” ở mục 6.</td></tr>
+          <tr><td class="n">M19</td><td class="n">docs::evidence</td><td><span class="chip">docs</span></td><td><span class="chip chip--bad">Must</span></td><td>README, danh sách contract address, bảng tx hash, video demo end-to-end.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card card--flat"><span class="idx">TỔNG KẾT PHẠM VI</span><p style="color:var(--ink)"><b>19 module</b> · 13 on-chain · 2 test · 1 off-chain · 2 tooling · 1 docs</p></div>
+      <div class="card card--accent"><span class="idx" style="color:var(--accent)">KHÔNG ĐƯỢC CẮT</span><p style="color:var(--ink)">M15 và M19. Cắt M15 là mất 20% ngân sách đã cam kết; cắt M19 là không có evidence để duyệt.</p></div>
+      <div class="callout"><span class="lbl">Nếu buộc phải cắt</span><p>M18 là ứng viên duy nhất — nhưng khi đó phải thay bằng video demo có thuyết minh, nếu không Chapter Lead sẽ không tự xác minh được.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 21 -->
+<section class="slide" data-sec="Release plan" data-title="Timeline 10 ngày">
+  <div class="slide-inner">
+    <p class="eyebrow">Execution plan · mục 5.1</p>
+    <h2 class="s-title">Mười ngày làm việc, năm chặng</h2>
+    <p class="s-sub">Cột output là nguyên văn expected output trong SOW — đây là thứ Chapter Lead đối chiếu.</p>
+    <div class="tblwrap">
+      <table class="tbl">
+        <thead><tr><th>Chặng</th><th>Nội dung</th><th>Module</th><th>Expected output</th></tr></thead>
+        <tbody>
+          <tr><td class="n"><b>Day 1–2</b><br>Treasury Foundation</td><td>Dựng Soroban project, treasury contract cho từng tổ chức, nhận deposit, quản lý role admin và operator.</td><td class="n">M1 M2<br>M3 M4</td><td>Treasury contract deploy được, nhận deposit, hiển thị chính xác on-chain balance.</td></tr>
+          <tr><td class="n"><b>Day 3–4</b><br>Category Cards</td><td>Cấu trúc virtual card cho các nhóm chi phí; allocate, set limit, chuyển balance, quản lý status.</td><td class="n">M5 M6<br>M7 M8</td><td>Tạo và quản lý được nhiều card theo category, mỗi card có balance, limit và status riêng.</td></tr>
+          <tr><td class="n"><b>Day 5–6</b><br>Spending Control</td><td>Entry point kiểm soát chi tiêu: status, remaining limit, card balance, treasury solvency; ghi kết quả.</td><td class="n">M9 M13<br>M14 khởi động</td><td>Flow spending control hoàn chỉnh, ghi cả approved và declined, chặn overspend và over-allocation.</td></tr>
+          <tr><td class="n"><b>Day 7–8</b><br>Withdrawal &amp; Reconciliation</td><td>Flow settlement sau khi payment được xác nhận: operator rút đúng card, chuyển tới whitelisted address, ghi đối soát.</td><td class="n">M10 M11<br>M12 M15</td><td>Flow on-chain hoàn chỉnh từ authorization tới withdraw và reconcile, có authorization chặt chẽ.</td></tr>
+          <tr><td class="n"><b>Day 9–10</b><br>Testnet &amp; Demo</td><td>Deploy testnet, chạy full workflow: deposit → tạo card → allocate → validate spend → withdraw → reconcile.</td><td class="n">M16 M17<br>M18 M19</td><td>Toàn bộ contract Phase 1 deploy testnet, chạy end-to-end, mỗi bước có transaction hash verify được.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout" style="margin-top:14px">
+      <span class="lbl">Rủi ro lịch trình</span>
+      <p>M14 và M15 nằm ở chặng 3 và 4 nhưng ngân sách coi test là 20% khối lượng. Nếu để dồn hết test vào Day 9–10 thì chặng cuối sẽ vỡ. Viết test song song ngay từ Day 1.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 22 -->
+<section class="slide" data-sec="Release plan" data-title="Test matrix">
+  <div class="slide-inner">
+    <p class="eyebrow">Test matrix · 20% ngân sách</p>
+    <h2 class="s-title">Mười case tối thiểu phải xanh</h2>
+    <p class="s-sub">SOW nêu bốn nhóm case; đây là bản khai triển thành case cụ thể kèm reason code kỳ vọng.</p>
+    <div class="tblwrap">
+      <table class="tbl">
+        <thead><tr><th>#</th><th>Tình huống</th><th>Kỳ vọng</th><th>Nhóm theo SOW</th></tr></thead>
+        <tbody>
+          <tr><td class="n">T1</td><td>Card Active, dưới limit, đủ balance</td><td><span class="chip chip--ok">APPROVED</span></td><td>approved spend</td></tr>
+          <tr><td class="n">T2</td><td>Card đang Frozen</td><td><span class="chip chip--bad">CARD_FROZEN</span></td><td>declined spend</td></tr>
+          <tr><td class="n">T3</td><td>Số tiền vượt remaining limit của chu kỳ</td><td><span class="chip chip--bad">LIMIT_EXCEEDED</span></td><td>over-limit</td></tr>
+          <tr><td class="n">T4</td><td>Còn limit nhưng card không đủ balance</td><td><span class="chip chip--bad">INSUFFICIENT_CARD_BALANCE</span></td><td>declined spend</td></tr>
+          <tr><td class="n">T5</td><td>Card đủ nhưng treasury không còn khả năng chi trả</td><td><span class="chip chip--bad">TREASURY_INSOLVENT</span></td><td>declined spend</td></tr>
+          <tr><td class="n">T6</td><td>Allocate vượt unallocated balance</td><td><span class="chip chip--bad">OVER_ALLOCATION</span></td><td>over-allocation</td></tr>
+          <tr><td class="n">T7</td><td>Không phải admin gọi <span class="mono">allocate</span></td><td><span class="chip chip--bad">UNAUTHORIZED</span></td><td>role permission</td></tr>
+          <tr><td class="n">T8</td><td>Không phải operator gọi <span class="mono">settle</span></td><td><span class="chip chip--bad">UNAUTHORIZED</span></td><td>role permission</td></tr>
+          <tr><td class="n">T9</td><td>Settle tới địa chỉ chưa whitelist</td><td><span class="chip chip--bad">NOT_WHITELISTED</span></td><td>role permission</td></tr>
+          <tr><td class="n">T10</td><td>Settle số tiền lớn hơn spend đã ghi, hoặc settle lần hai</td><td><span class="chip chip--bad">AMOUNT_EXCEEDS_SPEND</span> <span class="chip chip--bad">ALREADY_SETTLED</span></td><td>declined spend</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout" style="margin-top:14px">
+      <span class="lbl">Thêm một lớp nữa</span>
+      <p>Sau <b>mỗi</b> case ở trên, assert lại bất biến solvency: <span class="mono">Σ card.balance + unallocated == số dư USDC contract đang giữ</span>. Rẻ để viết, và là thứ bắt được lỗi accounting mà từng case riêng lẻ không thấy.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 23 -->
+<section class="slide" data-sec="Release plan" data-title="Ngân sách ↔ module">
+  <div class="slide-inner">
+    <p class="eyebrow">Budget · mục 4.2</p>
+    <h2 class="s-title">$5,000 chia theo khối lượng thực</h2>
+    <div class="grid g-2-1">
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead><tr><th>Hạng mục</th><th>Số tiền</th><th>%</th><th>D</th><th>Module</th></tr></thead>
+          <tbody>
+            <tr><td><b>Smart Contract</b><br>Treasury custody &amp; role, category card kèm limit, withdraw có phân quyền, reconciliation.</td><td class="n">$2,200</td><td class="n">44</td><td class="n">D1·D2·D3</td><td class="n">M1–M13</td></tr>
+            <tr><td><b>Unit &amp; Integration Tests</b><br>Toàn bộ entry point, approved và declined, over-limit, over-allocation, role permission.</td><td class="n">$1,000</td><td class="n">20</td><td class="n">D1·D2·D3</td><td class="n">M14 M15</td></tr>
+            <tr><td><b>RPC Integration</b><br>Lấy và validate transaction deposit và settlement USDC qua Stellar RPC.</td><td class="n">$800</td><td class="n">16</td><td class="n">D1·D3</td><td class="n">M16</td></tr>
+            <tr><td><b>Deploy + Demo</b><br>Deploy testnet, nạp quỹ cho verifier, quay demo end-to-end kèm transaction hash.</td><td class="n">$1,000</td><td class="n">20</td><td class="n">D1·D2·D3</td><td class="n">M17 M18 M19</td></tr>
+            <tr><td><b>TỔNG</b></td><td class="n"><b>$5,000</b></td><td class="n">100</td><td></td><td class="n">19 module</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="grid" style="gap:12px;align-content:start">
+        <div class="card card--accent">
+          <span class="idx" style="color:var(--accent)">ĐỌC RA ĐƯỢC GÌ TỪ TỶ LỆ NÀY</span>
+          <p style="color:var(--ink)">Contract chỉ chiếm 44%. Hơn một nửa ngân sách nằm ở test, RPC và demo — tức là ở phần <b>chứng minh</b>, không phải phần <b>viết</b>. Kế hoạch làm việc nên phản ánh đúng tỷ lệ đó.</p>
+        </div>
+        <div class="callout">
+          <span class="lbl">Ràng buộc Instaward</span>
+          <p>Cap $5,000 mỗi Instaward · tối đa hai follow-on · tổng không quá $15,000 · hoàn tất trong 30 ngày.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 24 -->
+<section class="slide" data-sec="Release plan" data-title="Evidence of completion">
+  <div class="slide-inner">
+    <p class="eyebrow">Evidence · mục 6</p>
+    <h2 class="s-title">Bằng chứng phải rõ, verify được, và dễ đọc</h2>
+    <p class="s-sub">Tiêu chuẩn trong SOW: Chapter Lead phải review được <b>với minimal technical expertise</b>. Mọi quyết định về evidence đều quay về câu này.</p>
+    <div class="grid g3">
+      <div class="card">
+        <span class="idx">DELIVERABLE 1</span>
+        <h3>On-Chain Treasury</h3>
+        <ul class="list" style="margin-top:9px">
+          <li>GitHub repository</li>
+          <li>Link contract đã deploy</li>
+          <li>Link transaction trên Stellar Expert</li>
+          <li>Kết quả test</li>
+          <li>Ảnh và video demo</li>
+        </ul>
+        <div class="hr" style="margin:12px 0"></div>
+        <p>Chứng minh: treasury contract của một tổ chức đã deploy trên testnet, nhận được stablecoin và hiển thị đúng available balance.</p>
+      </div>
+      <div class="card">
+        <span class="idx">DELIVERABLE 2</span>
+        <h3>Cards &amp; Spending Control</h3>
+        <ul class="list" style="margin-top:9px">
+          <li>Link transaction của contract</li>
+          <li>Screenshot</li>
+          <li>Kết quả test</li>
+          <li>Ảnh và video demo</li>
+        </ul>
+        <div class="hr" style="margin:12px 0"></div>
+        <p>Chứng minh: tổ chức tạo được card theo category, allocate balance, set limit, và approve hoặc reject spend dựa trên quỹ khả dụng cùng limit của card.</p>
+      </div>
+      <div class="card">
+        <span class="idx">DELIVERABLE 3</span>
+        <h3>Withdrawal &amp; Reconciliation</h3>
+        <ul class="list" style="margin-top:9px">
+          <li>Settlement transaction hash</li>
+          <li>Link Stellar Expert</li>
+          <li>Reconciliation record</li>
+          <li>Kết quả test</li>
+          <li>Ảnh và video demo</li>
+        </ul>
+        <div class="hr" style="margin:12px 0"></div>
+        <p>Chứng minh: một payment đã duyệt được settle bằng cách trừ đúng card, chuyển stablecoin tới bên thứ ba đã duyệt, và ghi đối soát on-chain.</p>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:16px">
+      <span class="lbl">Cách làm evidence dễ duyệt nhất</span>
+      <p>Một bảng duy nhất trong README: mỗi dòng là một bước của demo end-to-end, kèm transaction hash link thẳng ra Stellar Expert. Chapter Lead tick từng dòng ở checklist mục 6.2 mà không cần đọc code.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 25 -->
+<section class="slide" data-sec="Quyết định" data-title="Chín quyết định cần chốt">
+  <div class="slide-inner">
+    <p class="eyebrow">Open decisions · cần Technical Lead chốt trước Day 1</p>
+    <h2 class="s-title">Chín chỗ SOW để mở</h2>
+    <p class="s-sub">Không chốt trước thì sẽ chốt giữa lúc code, và mỗi lần như vậy đều đắt hơn.</p>
+    <div class="grid g3">
+      <div class="card card--accent"><span class="idx" style="color:var(--accent)">01 · ƯU TIÊN CAO NHẤT</span><h3>Cửa sổ race của authorization</h3><p>Gateway quyết định trong ~2s, contract ghi sau ≥1 ledger. Trong khoảng đó một spend khác có thể làm cạn balance. Chọn: cơ chế hold/reserve on-chain, hay chấp nhận contract là trọng tài cuối và gateway phải xử lý “orphan approval”?</p></div>
+      <div class="card card--accent"><span class="idx" style="color:var(--accent)">02 · CHẶN DAY 3</span><h3>Limit tính theo chu kỳ nào</h3><p>SOW không nói limit là per-transaction, daily hay monthly. Câu trả lời quyết định có cần <span class="mono">spent_in_window</span> và logic reset hay không.</p></div>
+      <div class="card card--flat"><span class="idx">03</span><h3>Authorization và capture</h3><p>Số tiền capture thật có thể khác số tiền auth. Phase 1 có thêm state <span class="mono">Captured</span> hay bỏ qua và ghi nhận rủi ro?</p></div>
+      <div class="card card--flat"><span class="idx">04</span><h3>Có ghi mọi decline on-chain không</h3><p>Ghi decline vào persistent storage tốn phí và lộ dữ liệu. Đề xuất: decline chỉ emit event, approved mới ghi record.</p></div>
+      <div class="card card--flat"><span class="idx">05</span><h3>Đơn vị số</h3><p>USDC trên Stellar có 7 decimals. Dùng <span class="mono">i128</span> đơn vị nhỏ nhất xuyên suốt, mọi phép trừ đều checked.</p></div>
+      <div class="card card--flat"><span class="idx">06</span><h3>Quản lý key của operator</h3><p>Operator ký mọi <span class="mono">authorize_spend</span> và <span class="mono">settle</span> nên là hot key. Phase 1 chấp nhận; cần ghi rõ đây là nợ kỹ thuật cho security review.</p></div>
+      <div class="card card--flat"><span class="idx">07</span><h3>Một contract cho mỗi tổ chức</h3><p>Multi-org tenancy ngoài scope nên mỗi org một instance. Cần factory contract hay chỉ script deploy thủ công là đủ cho Phase 1?</p></div>
+      <div class="card card--flat"><span class="idx">08</span><h3>TTL và archival</h3><p>Persistent storage trên Soroban có TTL. Bump mỗi lần ghi, hay để record lịch sử sống ở event và off-chain index?</p></div>
+      <div class="card card--flat"><span class="idx">09</span><h3>Demo console tính vào đâu</h3><p>Frontend là out-of-scope nhưng evidence cần nhìn thấy được. Chốt: console tính vào line Deploy + Demo, và ghi rõ trong repo rằng đây là demo harness.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 26 -->
+<section class="slide" data-sec="Quyết định" data-title="Bước tiếp theo">
+  <div class="slide-inner">
+    <p class="eyebrow">Next-step alignment · mục 7 và 8</p>
+    <h2 class="s-title">Sau SOW 1</h2>
+    <div class="grid g2">
+      <div>
+        <div class="card" style="margin-bottom:12px">
+          <span class="idx">HƯỚNG ĐÃ CHỌN TRONG SOW</span>
+          <ul class="list" style="margin-top:9px">
+            <li><b>Apply to SCF Build Award</b> — đã tick</li>
+            <li><b>Apply for a follow-on Instaward</b> nếu đủ điều kiện — đã tick</li>
+            <li style="opacity:.55">Continue development independently — không chọn</li>
+            <li style="opacity:.55">Seek other ecosystem support — không chọn</li>
+          </ul>
+        </div>
+        <div class="card card--flat">
+          <span class="idx">CAM KẾT ĐÃ KÝ</span>
+          <ul class="list" style="margin-top:9px">
+            <li>Hoàn tất trong 30 ngày hoặc ít hơn</li>
+            <li>Instaward tài trợ execution, không phải exploration mở</li>
+            <li>Mỗi dự án tối đa hai follow-on Instaward</li>
+            <li>Mỗi Instaward tối đa $5,000 · tổng không quá $15,000</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="card card--accent">
+          <span class="idx" style="color:var(--accent)">VIỆC CỦA TUẦN NÀY</span>
+          <ul class="list" style="margin-top:9px">
+            <li><b>Chốt chín quyết định</b> ở slide trước — ít nhất quyết định 01, 02 và 04</li>
+            <li><b>Freeze API surface</b> ở slide 10 và commit vào repo dưới dạng interface trước khi implement</li>
+            <li><b>Dựng khung test</b> theo mười case ở slide 22 ngay từ Day 1, không để dồn về cuối</li>
+            <li><b>Chuẩn bị bảng evidence</b> rỗng trong README, điền dần theo từng chặng thay vì gom vào Day 10</li>
+          </ul>
+        </div>
+        <div class="callout" style="margin-top:12px">
+          <span class="lbl">Nhắc lại một lần nữa</span>
+          <p>Phase 1 <b>không</b> có mainnet. Mainnet deployment bị hoãn tới sau security review và nằm ngoài Phase 1 — nói rõ điều này trong README để không ai hiểu nhầm khi xem demo.</p>
+        </div>
+      </div>
+    </div>
+    <div class="hr"></div>
+    <p style="color:var(--ink-faint);font-size:13.5px">
+      Deck này được viết lại từ <span class="mono">Saintix Instaward_SOW.docx</span> — mục 2 đến mục 9. Phần feature, module, test case và quyết định mở là diễn giải kỹ thuật để đội development bắt đầu build; phần scope, ngân sách, timeline và evidence giữ nguyên theo SOW.
+    </p>
+  </div>
+</section>
+
+
+
+</main>
+
+<div class="bottom">
+  <div class="nav">
+    <button class="btn" id="prevBtn" aria-label="Slide trước">‹</button>
+    <button class="btn" id="nextBtn" aria-label="Slide sau">›</button>
+  </div>
+  <div class="track"><i id="bar"></i></div>
+  <div class="count" id="count">01 / 01</div>
+</div>
+
+<div class="toc" id="toc" data-open="false">
+  <div class="toc-panel">
+    <h3>Mục lục</h3>
+    <div id="tocList"></div>
+    <p style="margin-top:22px;font-size:12.5px;color:var(--ink-faint)">
+      Phím tắt: <span class="kbd">←</span> <span class="kbd">→</span> chuyển slide ·
+      <span class="kbd">M</span> đổi chế độ · <span class="kbd">T</span> mục lục · <span class="kbd">Esc</span> đóng
+    </p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0;
+  var body = document.body;
+  var crumb = document.getElementById('crumb');
+  var count = document.getElementById('count');
+  var bar = document.getElementById('bar');
+  var toc = document.getElementById('toc');
+  var tocList = document.getElementById('tocList');
+  var modeBtn = document.getElementById('modeBtn');
+
+  function pad(n){ return (n<10?'0':'') + n; }
+
+  function render(){
+    slides.forEach(function(s,n){ s.classList.toggle('is-active', n===i); });
+    crumb.textContent = slides[i].dataset.sec + ' — ' + slides[i].dataset.title;
+    count.textContent = pad(i+1) + ' / ' + pad(slides.length);
+    bar.style.width = ((i+1)/slides.length*100) + '%';
+  }
+  function go(n){
+    i = Math.max(0, Math.min(slides.length-1, n));
+    render();
+    if(body.classList.contains('mode-doc')){
+      slides[i].scrollIntoView({behavior:'smooth', block:'start'});
+    } else {
+      window.scrollTo(0,0);
+    }
+  }
+  function setToc(open){ toc.dataset.open = open ? 'true' : 'false'; }
+
+  // build TOC grouped by section
+  var lastSec = null;
+  slides.forEach(function(s,n){
+    if(s.dataset.sec !== lastSec){
+      lastSec = s.dataset.sec;
+      var g = document.createElement('div');
+      g.className = 'toc-group';
+      g.textContent = lastSec;
+      tocList.appendChild(g);
+    }
+    var a = document.createElement('a');
+    a.href = '#';
+    a.innerHTML = '<em>' + pad(n+1) + '</em><span>' + s.dataset.title + '</span>';
+    a.addEventListener('click', function(e){ e.preventDefault(); setToc(false); go(n); });
+    tocList.appendChild(a);
+  });
+
+  document.getElementById('nextBtn').addEventListener('click', function(){ go(i+1); });
+  document.getElementById('prevBtn').addEventListener('click', function(){ go(i-1); });
+  document.getElementById('tocBtn').addEventListener('click', function(){ setToc(toc.dataset.open !== 'true'); });
+  toc.addEventListener('click', function(e){ if(e.target === toc) setToc(false); });
+
+  modeBtn.addEventListener('click', function(){
+    var doc = body.classList.toggle('mode-doc');
+    body.classList.toggle('mode-deck', !doc);
+    modeBtn.setAttribute('aria-pressed', doc ? 'true' : 'false');
+    modeBtn.textContent = doc ? 'Trình chiếu' : 'Tài liệu';
+    if(doc){ slides.forEach(function(s){ s.classList.remove('is-active'); }); }
+    else { render(); window.scrollTo(0,0); }
+  });
+
+  document.addEventListener('keydown', function(e){
+    var t = e.target.tagName;
+    if(t === 'INPUT' || t === 'TEXTAREA') return;
+    if(e.key === 'Escape'){ setToc(false); return; }
+    if(e.key === 't' || e.key === 'T'){ setToc(toc.dataset.open !== 'true'); return; }
+    if(e.key === 'm' || e.key === 'M'){ modeBtn.click(); return; }
+    if(body.classList.contains('mode-doc')) return;
+    if(e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' '){ e.preventDefault(); go(i+1); }
+    else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); go(i-1); }
+    else if(e.key === 'Home'){ e.preventDefault(); go(0); }
+    else if(e.key === 'End'){ e.preventDefault(); go(slides.length-1); }
+  });
+
+  body.classList.add('mode-deck');
+  render();
+})();
+</script>
+
+</body>
+</html>
